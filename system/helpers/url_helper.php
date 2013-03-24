@@ -13,6 +13,18 @@
  * @filesource
  */
 
+
+if ( ! function_exists('static_url'))
+{
+    function static_url($uri = '')
+    {
+        $CI =& get_instance();
+        return $CI->config->static_url($uri);
+    }
+}
+
+
+
 // ------------------------------------------------------------------------
 
 /**
