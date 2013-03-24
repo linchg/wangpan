@@ -33,37 +33,74 @@
 | 				 can make your site vulnerable to SQL injection if you are using a
 | 				 multi-byte character set and are running versions lower than these.
 | 				 Sites using Latin-1 or UTF-8 database character set and collation are unaffected.
-|	['swap_pre'] A default table prefix that should be swapped with the dbprefix
+|	['swap_pre'] A wangpan table prefix that should be swapped with the dbprefix
 |	['autoinit'] Whether or not to automatically initialize the database.
 |	['stricton'] TRUE/FALSE - forces 'Strict Mode' connections
 |							- good for ensuring strict SQL while developing
 |
 | The $active_group variable lets you choose which connection group to
-| make active.  By default there is only one group (the 'default' group).
+| make active.  By wangpan there is only one group (the 'wangpan' group).
 |
 | The $active_record variables lets you determine whether or not to load
 | the active record class
 */
 
-$active_group = 'default';
+$active_group = 'wangpan';
 $active_record = TRUE;
 
-$db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'root';
-$db['default']['password'] = '';
-$db['default']['database'] = 'wangpan';
-$db['default']['dbdriver'] = 'mysql';
-$db['default']['dbprefix'] = '';
-$db['default']['pconnect'] = false;
-$db['default']['db_debug'] = TRUE;
-$db['default']['cache_on'] = FALSE;
-$db['default']['cachedir'] = '';
-$db['default']['char_set'] = 'utf8';
-$db['default']['dbcollat'] = 'utf8_general_ci';
-$db['default']['swap_pre'] = '';
-$db['default']['autoinit'] = TRUE;
-$db['default']['stricton'] = FALSE;
-
-
+switch (ENVIRONMENT)
+{
+case 'development':
+    $db['wangpan']['hostname'] = 'localhost';
+    $db['wangpan']['username'] = 'root';
+    $db['wangpan']['password'] = '';
+    $db['wangpan']['database'] = 'wangpan';
+    $db['wangpan']['dbdriver'] = 'mysql';
+    $db['wangpan']['dbprefix'] = '';
+    $db['wangpan']['pconnect'] = TRUE;
+    $db['wangpan']['db_debug'] = TRUE;
+    $db['wangpan']['cache_on'] = FALSE;
+    $db['wangpan']['cachedir'] = '';
+    $db['wangpan']['char_set'] = 'utf8';
+    $db['wangpan']['dbcollat'] = 'utf8_general_ci';
+    $db['wangpan']['swap_pre'] = '';
+    $db['wangpan']['autoinit'] = TRUE;
+    $db['wangpan']['stricton'] = FALSE;
+    break;
+case 'production':
+    $db['wangpan']['hostname'] = 'localhost';
+    $db['wangpan']['username'] = 'root';
+    $db['wangpan']['password'] = '';
+    $db['wangpan']['database'] = 'wangpan';
+    $db['wangpan']['dbdriver'] = 'mysql';
+    $db['wangpan']['dbprefix'] = '';
+    $db['wangpan']['pconnect'] = TRUE;
+    $db['wangpan']['db_debug'] = TRUE;
+    $db['wangpan']['cache_on'] = FALSE;
+    $db['wangpan']['cachedir'] = '';
+    $db['wangpan']['char_set'] = 'utf8';
+    $db['wangpan']['dbcollat'] = 'utf8_general_ci';
+    $db['wangpan']['swap_pre'] = '';
+    $db['wangpan']['autoinit'] = TRUE;
+    $db['wangpan']['stricton'] = FALSE;
+    break;
+default:
+    $db['wangpan']['hostname'] = 'localhost';
+    $db['wangpan']['username'] = 'root';
+    $db['wangpan']['password'] = '';
+    $db['wangpan']['database'] = 'wangpan';
+    $db['wangpan']['dbdriver'] = 'mysql';
+    $db['wangpan']['dbprefix'] = '';
+    $db['wangpan']['pconnect'] = TRUE;
+    $db['wangpan']['db_debug'] = TRUE;
+    $db['wangpan']['cache_on'] = FALSE;
+    $db['wangpan']['cachedir'] = '';
+    $db['wangpan']['char_set'] = 'utf8';
+    $db['wangpan']['dbcollat'] = 'utf8_general_ci';
+    $db['wangpan']['swap_pre'] = '';
+    $db['wangpan']['autoinit'] = TRUE;
+    $db['wangpan']['stricton'] = FALSE;
+    break;
+}
 /* End of file database.php */
 /* Location: ./application/config/database.php */
