@@ -14,7 +14,9 @@
 | path to your installation.
 |
 */
-$config['base_url']	= '';
+//静态文件
+$config['static_url'] = 'http://www.xingqupan.com/';
+$config['base_url']	= 'http://www.xingqupan.com/';
 
 /*
 |--------------------------------------------------------------------------
@@ -34,7 +36,9 @@ $config['index_page'] = 'index.php';
 |--------------------------------------------------------------------------
 |
 | This item determines which server global should be used to retrieve the
-| URI string.  The default setting of 'AUTO' works for most servers.
+| URI string.  The default settisgzloveng of 'AUTO' works for most servers.
+ad_path'] = $_SERVER['DOCUMENT_ROOT'] . '/uploads/manage/';
+
 | If your links do not seem to work, try one of the other delicious flavors:
 |
 | 'AUTO'			Default - auto detects
@@ -357,6 +361,8 @@ $config['rewrite_short_tags'] = FALSE;
 */
 $config['proxy_ips'] = '';
 
+//上传
+$config['upload_path'] = $_SERVER['DOCUMENT_ROOT'] . '/upload/';
 
 /* End of file config.php */
 /* Location: ./application/config/config.php */
