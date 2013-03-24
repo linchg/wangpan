@@ -17,7 +17,6 @@
 //静态文件
 $config['static_url'] = 'http://www.xingqupan.com/';
 $config['base_url']	= 'http://www.xingqupan.com/';
-
 /*
 |--------------------------------------------------------------------------
 | Index File
