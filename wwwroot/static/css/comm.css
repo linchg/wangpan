@@ -17,7 +17,7 @@ A:hover {TEXT-DECORATION: underline}
 #subtop .logo{width:200px;margin:10px 0px 0px 0px;float:left;}
 .subtop1 {float:right;}
 .subtop1 a{color:#FFF;font-size:15px;padding:10px;margin:0px 10px;}
-.subtop1 a.on{color:#000;width:81px;padding:0px;display:inline-block;text-align:center;font-size:16px;background-image: url(../n_images/mbg.gif);background-repeat: no-repeat;background-position: center 24px;		}
+.subtop1 a.on{color:#000;width:81px;padding:0px;display:inline-block;text-align:center;font-size:16px;background-image: url(../images/mbg.gif);background-repeat: no-repeat;background-position: center 24px;		}
 .subtop1 #hot{float: left;height: 13px;width: 23px;left: 227px;top: -12px;*top: 18px; display:block;position: relative;}
 .subtop1 #new{float: left;height: 16px;width: 21px;left: 308px;top: -9px;*top: 19px; display:block;position: relative;}
 #banner{width:100%;overflow:hidden;}
@@ -79,7 +79,7 @@ A:hover {TEXT-DECORATION: underline}
 
 .fle{float:left}
 .title_child{font-size:25px;color:#000000;padding-top: 16px;padding-right: 0px;padding-bottom: 18px;padding-left: 0px;margin-right: 16px;}
-.info b,.info-pop-t,.info-pop-t b,div.info-pop-b b,div.info-pop-b,.info-pop .arr{background-image:url(../n_images/bg.jpg); background-repeat:no-repeat}
+.info b,.info-pop-t,.info-pop-t b,div.info-pop-b b,div.info-pop-b,.info-pop .arr{background-image:url(../images/bg.jpg); background-repeat:no-repeat}
 .info{ position:relative; height:20px}
 b.ico-ok,b.ico-error{display:block;width:18px;height:18px; font-size:0px;overflow:hidden; position:absolute; left:0px; top:3px}
 b.ico-ok{ background-position:-5px -3px}

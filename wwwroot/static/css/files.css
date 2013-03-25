@@ -1,0 +1,81 @@
+@charset "utf-8";
+
+/*顶部菜单*/
+.sel-tr{ background:#f0f9ff;}
+.top-menubar{ background:#f0f9ff; box-shadow:0px 2px 2px #eee, 0 1px 1px #fff inset; border-top:0 none; }
+.top-menubar *{ margin-right:20px; display:inline-block; font-weight:normal; line-height:24px; }
+a.menu:hover{ color:#2281cf;}
+.viewstyle{ width:20px; padding:0; cursor:pointer;}
+.tableheader th.filename,.tableheader th.size,.tableheader th.date,.tableheader th.status{cursor:pointer;}
+
+a.menudm:link {text-decoration: none;}
+a.menudm:hover {text-decoration: none;}
+
+/*小图标*/
+.imitate-ico, .bgs { background:url(../images/icon-24.png) no-repeat; /*_background-image:url(../images/icon-8.png);*/ padding-left:35px; }
+.imitate-new { background-position: 0 -85px; }
+.imitate-checkin { background-position:10px -134px; color:#f6372a; }
+.imitate-upload { background-position:5px 2px; }
+.imitate-close{ background-position:5px -1332px;}
+.imitate-show-deleted { background-position: 0 -44px; }
+.imitate-clean-trash { background-position:0 -438px; }
+.imitate-list{ background-position:0 -660px;}
+.active-list,.imitate-list:hover{background-position:0 -624px;}
+.imitate-thumb{ background-position:0 -588px;}
+.active-thumb,.imitate-thumb:hover{background-position:0 -551px;}
+.ico-checkbox { background-position:10px -160px;  }
+.selected .ico-checkbox { background-position:10px -188px; }
+
+.ico-rename-file { background-position:10px -365px; padding-top:4px;}
+.ico-rename-file:hover { background-position:10px -931px;}
+.ico-move-file { background-position:10px -399px; padding-top:4px;}
+.ico-move-file:hover{ background-position:10px -965px;}
+.ico-delete-file { background-position:13px -42px; padding-top:4px;}
+.ico-delete-file:hover{ background-position:10px -752px;}
+
+.ico-rename-file1 { background-position:5px -365px; padding-top:4px;}
+.ico-rename-file1:hover { background-position:5px -931px;}
+.ico-delete-file1 { background-position:8px -42px; padding-top:4px;}
+.ico-delete-file1:hover{ background-position:5px -752px;}
+.ico-link-file { background-position:11px -335px; padding-top:4px;}
+.ico-link-file:hover{ background-position:11px -901px;}
+
+.ico-copy-file { background-position:8px -15px; padding-top:4px;}
+.ico-copy-file:hover{ background-position:5px -725px;}
+
+.h20{ height:20px;}
+.share-copy{ cursor:pointer; *vertical-align:3px; padding-top:8px; padding-bottom:7px;}
+
+.doc{ background-position:0 -152px; }
+.xls{ background-position:0 -426px;}
+.pdf{ background-position:0 -345px;}
+.img{ background-position:0 -181px;}
+.music{ background-position:0 -509px;}
+.video{ background-position:0 -481px;}
+.w{ background-position:0 -399px;}
+.p{ background-position:0 -237px;}
+.s{ background-position:0 -264px;}
+.ppt{ background-position:0 -291px;}
+.dll{ background-position:0 -318px;}
+.html{ background-position:0 -454px;}
+.txt{ background-position:0 -209px;}
+.floder{ background-position:0 -124px;}
+.rar{ background-position:0 -372px;}
+.unknow{ background-position:0 -603px;}
+.canvow{ height:27px; width:27px; overflow:hidden;}
+
+.ico-go-back { background-position:0 -504px; border-right:1px solid #e5e5e5; padding-right:10px;}
+.ico-go-back-disable{ background-position:-1px -1262px;}
+
+/*文件列表高度*/
+th,.save-sharelist h2 {  line-height:49px; height:49px; border-top:2px solid #b0c6d6;}
+td,.save-sharelist li {  padding:11px 0;}
+.bt0{border-top:0 none;}
+td,.save-sharelist li {  padding:11px 0;}
+
+/*滚动文件头*/
+.toolabsolute{position:fixed;_position:absolute;z-index:100;top:0px;*top:-1px;}
+
+.page a{float: left;margin-left: 5px;border: 1px solid #669999;font-size: 12px;padding-right: 8px;padding-left: 8px;}
+.page a:hover{background-color: #EDF3F3;}
+.page .sel {float: left;margin-left: 5px;border: 1px solid #669999;font-size: 12px;background-color: #EDF3F3;padding-right: 8px;padding-left: 8px;}

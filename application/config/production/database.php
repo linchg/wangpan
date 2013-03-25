@@ -48,59 +48,20 @@
 $active_group = 'wangpan';
 $active_record = TRUE;
 
-switch (ENVIRONMENT)
-{
-case 'development':
-    $db['wangpan']['hostname'] = 'localhost';
-    $db['wangpan']['username'] = 'root';
-    $db['wangpan']['password'] = '';
-    $db['wangpan']['database'] = 'wangpan';
-    $db['wangpan']['dbdriver'] = 'mysql';
-    $db['wangpan']['dbprefix'] = '';
-    $db['wangpan']['pconnect'] = false;
-    $db['wangpan']['db_debug'] = TRUE;
-    $db['wangpan']['cache_on'] = FALSE;
-    $db['wangpan']['cachedir'] = '';
-    $db['wangpan']['char_set'] = 'utf8';
-    $db['wangpan']['dbcollat'] = 'utf8_general_ci';
-    $db['wangpan']['swap_pre'] = '';
-    $db['wangpan']['autoinit'] = TRUE;
-    $db['wangpan']['stricton'] = FALSE;
-    break;
-case 'production':
-    $db['wangpan']['hostname'] = 'localhost';
-    $db['wangpan']['username'] = 'root';
-    $db['wangpan']['password'] = '';
-    $db['wangpan']['database'] = 'wangpan';
-    $db['wangpan']['dbdriver'] = 'mysql';
-    $db['wangpan']['dbprefix'] = '';
-    $db['wangpan']['pconnect'] = false;
-    $db['wangpan']['db_debug'] = false;
-    $db['wangpan']['cache_on'] = FALSE;
-    $db['wangpan']['cachedir'] = '';
-    $db['wangpan']['char_set'] = 'utf8';
-    $db['wangpan']['dbcollat'] = 'utf8_general_ci';
-    $db['wangpan']['swap_pre'] = '';
-    $db['wangpan']['autoinit'] = TRUE;
-    $db['wangpan']['stricton'] = FALSE;
-    break;
-default:
-    $db['wangpan']['hostname'] = 'localhost';
-    $db['wangpan']['username'] = 'root';
-    $db['wangpan']['password'] = '';
-    $db['wangpan']['database'] = 'wangpan';
-    $db['wangpan']['dbdriver'] = 'mysql';
-    $db['wangpan']['dbprefix'] = '';
-    $db['wangpan']['pconnect'] = false;
-    $db['wangpan']['db_debug'] = false;
-    $db['wangpan']['cache_on'] = FALSE;
-    $db['wangpan']['cachedir'] = '';
-    $db['wangpan']['char_set'] = 'utf8';
-    $db['wangpan']['dbcollat'] = 'utf8_general_ci';
-    $db['wangpan']['swap_pre'] = '';
-    $db['wangpan']['autoinit'] = TRUE;
-    $db['wangpan']['stricton'] = FALSE;
-    break;
-}
+$db['wangpan']['hostname'] = 'localhost';
+$db['wangpan']['username'] = 'root';
+$db['wangpan']['password'] = '';
+$db['wangpan']['database'] = 'wangpan';
+$db['wangpan']['dbdriver'] = 'mysql';
+$db['wangpan']['dbprefix'] = '';
+$db['wangpan']['pconnect'] = false;
+$db['wangpan']['db_debug'] = TRUE;
+$db['wangpan']['cache_on'] = FALSE;
+$db['wangpan']['cachedir'] = '';
+$db['wangpan']['char_set'] = 'utf8';
+$db['wangpan']['dbcollat'] = 'utf8_general_ci';
+$db['wangpan']['swap_pre'] = '';
+$db['wangpan']['autoinit'] = TRUE;
+$db['wangpan']['stricton'] = FALSE;
 /* End of file database.php */
 /* Location: ./application/config/database.php */
