@@ -52,7 +52,7 @@ $autoload['packages'] = array();
 |	$autoload['libraries'] = array('database', 'session', 'xmlrpc');
 */
 
-$autoload['libraries'] = array('session' , 'template',  'login');
+$autoload['libraries'] = array('session' ,'wangpan', 'template', 'json','error', 'login');
 
 
 /*

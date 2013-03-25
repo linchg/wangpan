@@ -63,5 +63,6 @@ $db['wangpan']['dbcollat'] = 'utf8_general_ci';
 $db['wangpan']['swap_pre'] = '';
 $db['wangpan']['autoinit'] = TRUE;
 $db['wangpan']['stricton'] = FALSE;
+
 /* End of file database.php */
 /* Location: ./application/config/database.php */
