@@ -66,7 +66,7 @@ class Kcaptcha {
 			$n = $i+1;
 			imagettftext($im, $fontSize, rand(-40,40) , $x ,$y, $color, $font, $char);
 		}
-		$this->CI->session->set_userdata('captcha', $number);
+		$this->CI->session->set_userdata('captcha', array($number,time()));
 		header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); 
 		header('Cache-Control: no-store, no-cache, must-revalidate'); 
 		header('Cache-Control: post-check=0, pre-check=0', FALSE); 
@@ -308,7 +308,10 @@ class Kcaptcha {
 	 */
 
 	function verify($captcha, $unset = false) {
-		if(($this->CI->session->userdata('captcha') != $captcha) || empty($captcha)) {
+		$captchaData = $this->CI->session->userdata('captcha');
+		$timeExpire = $this->CI->wangpan->get('captcha_time_limit');
+		$time = time();
+		if(empty($captchaData) || $captchaData[0] != $captcha || ($time - $captchaData[1]) > $timeExpire) {
 			$this->CI->error->set_error('20101');
 			if($unset) {
 				$this->CI->session->unset_userdata('captcha');
@@ -320,6 +323,5 @@ class Kcaptcha {
 		}
 		return true;
 	}
-
 
 }

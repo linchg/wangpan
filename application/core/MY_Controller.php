@@ -54,7 +54,7 @@ class MY_Controller extends CI_Controller {
 		echo $html;
 	}
 
-	public function  display_html($view , $vars = array() , $return = false)
+	public function  displayHtml($view , $vars = array() , $return = false)
 	{
 		if ($return == false)
 		{
@@ -66,7 +66,7 @@ class MY_Controller extends CI_Controller {
 		}
 	}
 
-	public function build_request($question_mark = false) {
+	public function buildRequest($question_mark = false) {
 		$get = $this->input->get();
 		if(!$get) {
 			return '';
@@ -87,5 +87,23 @@ class MY_Controller extends CI_Controller {
 			redirect($redurl, 'refresh');
 		}
 		redirect('/', 'refresh');
+	}
+	
+	//成功输出
+	public function successOutput($data = array())
+	{
+        $this->json->output(array('r' => SERVICE_NUMBER::SUCCESS, 'data' => $data));
+	}
+	
+	//错误输出
+	public function errorOutput($code = '' , $msg = '' , $req = '')
+	{
+		if (empty($req)) $req = $this->uri->uri_string();
+		if (empty($code)) 
+		{
+			$code = $this->error->get_error();
+		}
+		$msg = empty($msg) ? $this->error->error_msg($code):$msg;
+        $this->json->output(array('code' => $code , 'msg' => $msg , 'req' => $req));
 	}
 }
