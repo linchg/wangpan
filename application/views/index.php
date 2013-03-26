@@ -75,7 +75,7 @@ $(document).ready(function(){
 <div id="banner">
 <div id="subtop">
 <div class="top_width">
-<div class="logo"><a href="/" title="一木禾网盘"><img src="n_images/logo_black.jpg"></a></div>
+<div class="logo"><a href="/" title="一木禾网盘"><img src="<?php echo static_url('static/images/logo_black.jpg')?>"></a></div>
 <div class="subtop1">
 <div id="hot"><img src="n_images/hot1.gif"></div>
 <div id="new"><img src="n_images/new1.gif"></div>
@@ -87,7 +87,7 @@ $(document).ready(function(){
 </div>
 </div>
 </div>
-<div class="child"><img id="banner_img" onload="javascript:change_banner();"></div>
+<div><img id="banner_img" src="<?php echo static_url('static/images/1.jpg');?>" /></div>
 </div>
 
 <div id="maincontent1"> 
@@ -132,11 +132,11 @@ $(document).ready(function(){
           </li>
           <li>
           <input name="s_code" type="text" class="input_c" id="s_code" value="验证码" maxlength="5"/>
-          <img src="n_code.php" name="vcode_img" align="absmiddle" class="" id="vcode_img">&nbsp;&nbsp;<a href="#" onClick="$('#vcode_img').attr('src','n_code.php?t='+(new Date().getTime()));return false;">换一个</a>
+          <img src="/captcha/create?v=<?php echo time();?>" name="vcode_img" align="absmiddle" class="" id="vcode_img">&nbsp;&nbsp;<a href="#" onClick="$('#vcode_img').attr('src','/captcha/create?t='+(new Date().getTime()));return false;">换一个</a>
           </li>
           <li>
-<input id="login" name="" type="image" src="n_images/but1.jpg">
-<a href="n_reg_user.html" target="_top"><img src="n_images/but2.jpg" width="110" height="35" /></a>
+<input id="login" name="" type="image" src="<?php echo static_url('static/images/but1.jpg');?>">
+<a href="n_reg_user.html" target="_top"><img src="<?php echo static_url('static/images/but2.jpg');?>" width="110" height="35" /></a>
 <input name="type" type="hidden" id="type" value="login">
 <br />
 <a href="http://wpa.qq.com/msgrd?V=1&Uin=45995086&Site=www.yimuhe.com&Menu=no" title="忘记密码直接Q客服。" target="_blank" style="font-size:11px; color:#4476af; float:left;margin:3px 0px 0px 0px;">忘记密码？</a>
@@ -181,24 +181,6 @@ $(document).ready(function(){
 </div>
 <b class="b5"></b><b class="b6"></b><b class="b7"></b><b class="b8"></b>    
 </div>
-</div>
-
-<div id="maincontent2">
-<div class="sharp color1" style="width:100%;">
-<b class="b1"></b>
-<b class="b2"></b>
-<b class="b3"></b>
-<b class="b4"></b> 
-<div class="content" style="padding:0px 20px 0px 20px; height:153px;">
-<div class="title"><span class="l">积分兑换</span><span class="r more"><a href="/n_member/shop.php" target="_blank">更多商品</a></span></div>
-<table width="100%" border="0" cellspacing="0" cellpadding="6" class="jifenshop">
-  <tr>
-<td align="center"><img alt="Apple/苹果 iPhone 4S 16G版（黑）" src="n_shopimg/16s.jpg" width="80" height="80"></td><td align="center"><img alt="Apple/苹果 the new iPad(16G)WIFI版（黑）" src="n_shopimg/15s.jpg" width="80" height="80"></td><td align="center"><img alt="Sony/索尼 HDR-CX210E 高清/闪存摄像机 家用/专业/DV摄像机" src="n_shopimg/14s.jpg" width="80" height="80"></td><td align="center"><img alt="华为（HUAWEI）Ascend G330C（C8825D）双模3G手机" src="n_shopimg/13s.jpg" width="80" height="80"></td><td align="center"><img alt="松下DMC-FH2GK数码相机（1410万像素 2.7英寸液晶屏 4倍光学变焦 28mm广角）" src="n_shopimg/12s.jpg" width="80" height="80"></td><td align="center"><img alt="飞利浦（PHILIPS）HMP5000 高清媒体播放器内置无线WiFi 高清大片" src="n_shopimg/11s.jpg" width="80" height="80"></td><td align="center"><img alt="三星（SAMSUNG）M3系列 高性能USB3.0移动硬盘 500G" src="n_shopimg/10s.jpg" width="80" height="80"></td><td align="center"><img alt="友讯（D-Link）DIR-505 150M迷你无线路由器 云旅机便携式Mini云路由" src="n_shopimg/9s.jpg" width="80" height="80"></td>  </tr>
-</table>
-</div>
-<b class="b5"></b><b class="b6"></b><b class="b7"></b><b class="b8"></b>    
-</div>
-<div class="clear"></div>
 </div>
 
 <div id="maincontent2" style="height:20px;"></div>

@@ -23,38 +23,90 @@ class Kcaptcha {
 		$this->CI =& get_instance();
 	}
 
+
+	function newcreate()
+	{
+		$len = $this->CI->wangpan->get('captcha_len');
+		$width = $this->CI->wangpan->get('captcha_w');
+		$height = $this->CI->wangpan->get('captcha_h');
+		$fontSize = $this->CI->wangpan->get('captcha_s');
+		$fontsdir = 'data/kcaptcha/arial.ttf';
+		$font = APPPATH.$fontsdir;  
+		$width = intval($width);
+		$height = intval($height);
+		$fontSize = intval($fontSize);
+		$len = intval($len);
+		$im = imagecreatetruecolor($width, $height);
+		$backColor      = imagecolorallocate($im, rand(200, 255), rand(200, 255), rand(200, 255));
+		$randline = imagecolorallocate($im, rand(200, 255), rand(200, 255), rand(200, 255));
+		imagefilledrectangle($im, 0, 0, $width, $height, $backColor);
+		//随机的生成一些干扰像素
+		for($i = 0; $i < 400; $i++)
+		{   
+			$randcolor = ImageColorallocate($im, rand(10, 255), rand(10, 255), rand(10, 255));
+			imagesetpixel($im, rand()%$width, rand()%$height, $randcolor); 
+		}   
+		for($i = 0; $i < 6; $i++)
+		{   
+			imageline($im, rand()%$width, rand()%$height, rand()%$width, rand()%$height, $randline);
+		}   
+		$string = 'ABCDEFGHIJKLMNPQRSTUVWXYZ123456789';
+		$wAverage = $width / $len;
+		$wRand    = abs(intval($wAverage - $fontSize));
+		$hAverage = $height - $fontSize;
+		$number = '';
+		//imagettftext($im, $fontSize, rand(-40,40), rand($wRand,$wAverage-5), rand($fontSize , $fontSize+$hAverage-5), $stringColor_1, $font, $char_1);
+		for($i = 1 ; $i < $len ; $i++)
+		{
+			$char = $string{rand(0,33)};
+			$color = imagecolorallocate($im, rand(0, 200), rand(0, 200), rand(0, 200));
+			$number.=$char;
+			$x = rand($wAverage*$i ,$wAverage*$i+$wRand);
+			$y = rand($fontSize , $fontSize+$hAverage-5);
+			$n = $i+1;
+			imagettftext($im, $fontSize, rand(-40,40) , $x ,$y, $color, $font, $char);
+		}
+		$this->CI->session->set_userdata('captcha', $number);
+		header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); 
+		header('Cache-Control: no-store, no-cache, must-revalidate'); 
+		header('Cache-Control: post-check=0, pre-check=0', FALSE); 
+		header('Pragma: no-cache');
+		header("Content-type: image/png");
+		imagepng($im);
+		imagedestroy($im);
+	}	
 	// generates keystring and image
 	function create() {
 		//require(dirname(__FILE__).'/kcaptcha_config.php');
-		
+
 		$alphabet = "0123456789abcdefghijklmnopqrstuvwxyz"; # do not change without changing font files!
-		# symbols used to draw CAPTCHA
-		//$allowed_symbols = "0123456789"; #digits
-		$allowed_symbols = "23456789abcdeghkmnpqsuvxyz"; #alphabet without similar symbols (o=0, 1=l, i=j, t=f)
-		# folder with fonts
-		$fontsdir = 'data/kcaptcha';
-		# CAPTCHA string length
+# symbols used to draw CAPTCHA
+			//$allowed_symbols = "0123456789"; #digits
+			$allowed_symbols = "23456789abcdeghkmnpqsuvxyz"; #alphabet without similar symbols (o=0, 1=l, i=j, t=f)
+# folder with fonts
+			$fontsdir = 'data/kcaptcha';
+# CAPTCHA string length
 		//$length = mt_rand(5,7); # random 5 or 6
 		$length = $this->CI->wangpan->get('captcha_len');
-		# CAPTCHA image size (you do not need to change it, whis parameters is optimal)
+# CAPTCHA image size (you do not need to change it, whis parameters is optimal)
 		$width = $this->CI->wangpan->get('captcha_w');
 		$height = $this->CI->wangpan->get('captcha_h');
-		# symbol's vertical fluctuation amplitude divided by 2
+# symbol's vertical fluctuation amplitude divided by 2
 		$fluctuation_amplitude = 5;
-		# increase safety by prevention of spaces between symbols
+# increase safety by prevention of spaces between symbols
 		$no_spaces = true;
-		# show credits
+# show credits
 		$show_credits = false; # set to false to remove credits line. Credits adds 12 pixels to image height
-		$credits = 'www.xingqupan'; # if empty, HTTP_HOST will be shown
-		# CAPTCHA image colors (RGB, 0-255)
-		//$foreground_color = array(0, 0, 0);
-		//$background_color = array(220, 230, 255);
-		$foreground_color = array(mt_rand(0,100), mt_rand(0,100), mt_rand(0,100));
+			$credits = 'www.xingqupan'; # if empty, HTTP_HOST will be shown
+# CAPTCHA image colors (RGB, 0-255)
+			//$foreground_color = array(0, 0, 0);
+			//$background_color = array(220, 230, 255);
+			$foreground_color = array(mt_rand(0,100), mt_rand(0,100), mt_rand(0,100));
 		$background_color = array(mt_rand(200,255), mt_rand(200,255), mt_rand(200,255));
-		
-		# JPEG quality of CAPTCHA image (bigger is better quality, but larger file size)
+
+# JPEG quality of CAPTCHA image (bigger is better quality, but larger file size)
 		$jpeg_quality = 95;
-		
+
 		$fonts=array();
 		$fontsdir_absolute=APPPATH.$fontsdir;
 		if ($handle = opendir($fontsdir_absolute)) {
@@ -63,11 +115,11 @@ class Kcaptcha {
 					$fonts[]=$fontsdir_absolute.'/'.$file;
 				}
 			}
-		    closedir($handle);
+			closedir($handle);
 		}	
-	
+
 		$alphabet_length=strlen($alphabet);
-		
+
 		do{
 			// generating random keystring
 			while(true){
@@ -127,14 +179,14 @@ class Kcaptcha {
 						$shift=10000;
 						for($sy=7;$sy<$fontfile_height-20;$sy+=1){
 							for($sx=$m['start']-1;$sx<$m['end'];$sx+=1){
-				        		$rgb=imagecolorat($font, $sx, $sy);
-				        		$opacity=$rgb>>24;
+								$rgb=imagecolorat($font, $sx, $sy);
+								$opacity=$rgb>>24;
 								if($opacity<127){
 									$left=$sx-$m['start']+$x;
 									$py=$sy+$y;
 									if($py>$height) break;
 									for($px=min($left,$width-1);$px>$left-12 && $px>=0;$px-=1){
-						        		$color=imagecolorat($img, $px, $py) & 0xff;
+										$color=imagecolorat($img, $px, $py) & 0xff;
 										if($color+$opacity<190){
 											if($shift>$left-$px){
 												$shift=$left-$px;
@@ -213,10 +265,10 @@ class Kcaptcha {
 					$frsy1=1-$frsy;
 
 					$newcolor=(
-						$color*$frsx1*$frsy1+
-						$color_x*$frsx*$frsy1+
-						$color_y*$frsx1*$frsy+
-						$color_xy*$frsx*$frsy);
+							$color*$frsx1*$frsy1+
+							$color_x*$frsx*$frsy1+
+							$color_y*$frsx1*$frsy+
+							$color_xy*$frsx*$frsy);
 
 					if($newcolor>255) $newcolor=255;
 					$newcolor=$newcolor/255;
@@ -230,12 +282,12 @@ class Kcaptcha {
 				imagesetpixel($img2, $x, $y, imagecolorallocate($img2, $newred, $newgreen, $newblue));
 			}
 		}
-		
+
 		header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); 
 		header('Cache-Control: no-store, no-cache, must-revalidate'); 
 		header('Cache-Control: post-check=0, pre-check=0', FALSE); 
 		header('Pragma: no-cache');
-		
+
 		if(function_exists("imagejpeg")){
 			header("Content-Type: image/jpeg");
 			imagejpeg($img2, null, $jpeg_quality);
@@ -250,14 +302,14 @@ class Kcaptcha {
 
 	// returns keystring
 	/*
-	function get_code(){
-		return $this->keystring;
-	}
-	*/
-	
+	   function get_code(){
+	   return $this->keystring;
+	   }
+	 */
+
 	function verify($captcha, $unset = false) {
 		if(($this->CI->session->userdata('captcha') != $captcha) || empty($captcha)) {
-			$this->CI->error->set_error('10001');
+			$this->CI->error->set_error('20101');
 			if($unset) {
 				$this->CI->session->unset_userdata('captcha');
 			}
@@ -268,6 +320,6 @@ class Kcaptcha {
 		}
 		return true;
 	}
-	
+
 
 }
