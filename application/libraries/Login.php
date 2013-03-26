@@ -7,7 +7,8 @@ class Login
     }	
 
     public function checkLogin($username, $password){
-        $user = $this->get($username, "username");
+        $this->CI->load->model('user');
+        $user = $this->CI->user->get($username, "username");
         if(empty($user)){
             return false;
         }
@@ -23,14 +24,29 @@ class Login
         return $this->CI->session->userdata('id') ? true : false;
 	} 
 
-	public function get_user()
+	public function get_user($id,$session=true)
 	{
-		return array('username' => 'test');
+        if($session && $this->CI->session->userdata('id'))
+            return $this->CI->session->all_userdata();
+
+        $this->CI->load->model('user');
+        return $this->CI->user->get($id);
 	}
 
 	public function login_out()
 	{
-		return true;
+        $domain = config_item('cookie_domain');
+        $tmpUid = $this->CI->session->userdata('id');
+        $user_data = array(
+            'id' => '',
+            'email' => '',
+            'mobile' => '',
+            'username' => ''
+        );
+        $this->CI->session->unset_userdata($user_data);
+
+        $this->CI->input->set_cookie('uid', '', '', $domain);
+        $this->CI->input->set_cookie('token', '', '', $domain);
 	}
 }
 

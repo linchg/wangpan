@@ -32,7 +32,7 @@ class MY_Controller extends CI_Controller {
        
     public function getUser($uid)
     {   
-        return $this->login->get_user();    
+        return $this->login->get_user($uid);    
     }
 
     protected function globalLayout($data = array() , $header = 'header.php' , $footer = 'footer.php')

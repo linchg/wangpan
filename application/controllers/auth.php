@@ -16,7 +16,6 @@ class Auth extends MY_Controller {
         
         if($this->session->userdata('id')){ redirect('user/'); }
 
-
         if (!$this->input->is_post()){
             // Set backurl.
             if (isset($_SERVER['HTTP_REFERER'])){
@@ -65,7 +64,6 @@ class Auth extends MY_Controller {
                 
                 $user_data = array(
                     'id' => $this->user_data['id'],
-                    'fid' => $this->user_data['fid'],
                     'email' => $this->user_data['email'],
                     'mobile' => $this->user_data['mobile'],
                     'username' => $this->user_data['username'],
@@ -183,26 +181,7 @@ class Auth extends MY_Controller {
     
     public function logout()
     {
-        $tmpUid = $this->session->userdata('id');
-        $user_data = array(
-            'id' => '',
-            'fid' => '',
-            'email' => '',
-            'mobile' => '',
-            'username' => ''
-        );
-        $this->session->unset_userdata($user_data);
-
-        $this->input->set_cookie('uid', '', '', '.xy.com');
-        $this->input->set_cookie('token', '', '', '.xy.com');
-        //$this->input->set_cookie('lastuname', '', '', '.xy.com');
-        
-        $refurl = urldecode($this->input->get('ref'));
-        if(empty($refurl)){
-            redirect(base_url('/'));
-        }else{
-            redirect($refurl);
-        }
+        $this->userExit();
     }
     
     public function register()
@@ -599,7 +578,7 @@ class Auth extends MY_Controller {
     public function check_password($str){
         if (!is_array($this->user_data)){ $this->user_data = $this->user->get($this->session->userdata('id')); }
         if (count($this->user_data)>1){
-            if (md5($str) === $this->user_data['password']){
+            if (md5(config_item('user_pass_prefix').$str) === $this->user_data['password']){
                 return true;
             }else{
                 $this->form_validation->set_message('check_password', '%s 错误.');
