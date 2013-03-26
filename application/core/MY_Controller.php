@@ -20,13 +20,17 @@ class MY_Controller extends CI_Controller {
     }   
 
     public function loginVerify() {
-        //$siteUrl = $this->passPortUrl();
+        $siteUrl = $this->passPortUrl();
         if($this->login->is_login() !== true) {
-          //  redirect($siteUrl.'auth/login?redurl='.urlencode(current_url().$this->build_request(true)), 'refresh');
+            redirect($siteUrl.'auth/login?redurl='.urlencode(current_url().$this->build_request(true)), 'refresh');
         }   
     }   
+
+    public passPortUrl(){
+        return config_item('base_url');
+    }
        
-    public function getUser()
+    public function getUser($uid)
     {   
         return $this->login->get_user();    
     }
@@ -45,10 +49,7 @@ class MY_Controller extends CI_Controller {
 		{   
 			return $this->display($view , array() , $vars);
 		}
-		if (empty($header) && empty($footer))
-		{
-			$this->globalLayout();
-		}
+        $this->globalLayout();
 		$html = $this->Header.$this->load->view($view , $vars , true).$this->Footer;
 		if ($return) return $html;
 		echo $html;
