@@ -226,7 +226,7 @@ CREATE TABLE `user` (
   `email` varchar(80) DEFAULT '' COMMENT '电子邮件',
   `nick_name` varchar(80) DEFAULT '' COMMENT '昵称',
   `down_counts` int(12) DEFAULT 0 COMMENT '下载量',
-  `total_money` int(12) DEFAULT 0 COMMENT '获得总拥金',
+  `total_money` float DEFAULT 0.0 COMMENT '获得总拥金',
   `space_name` varchar(80) NOT NULL COMMENT '空间名称',
   `space_desc` text COMMENT '空间描述',
   `login_time` int(11) NOT NULL COMMENT '登录时间',
