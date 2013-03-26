@@ -26,8 +26,8 @@ CREATE TABLE `commision` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID 自增',
   `uid` int(11) NOT NULL COMMENT '用户ID',
   `income` float NOT NULL COMMENT '收入',
-  `eff_time` int(11) NOT NULL COMMENT '有效下载次数',
-  `eff_time_before` int(11) NOT NULL COMMENT '前天有效下载次数IP',
+  `eff_num` int(11) NOT NULL COMMENT '有效下载次数',
+  `eff_num_before` int(11) NOT NULL COMMENT '前天有效下载次数IP',
   `time` int(11) NOT NULL DEFAULT '0' COMMENT '日期',
   `statis_time` int(11) NOT NULL DEFAULT '0' COMMENT '统计时间',
   PRIMARY KEY (`id`),
@@ -144,7 +144,8 @@ CREATE TABLE `file` (
   `down_times` int(11) NOT NULL DEFAULT '0' COMMENT '下载次数',
   `add_time` int(11) NOT NULL COMMENT '上传时间',
   PRIMARY KEY (`id`),
-  KEY `uid` (`uid`,`did`)
+  KEY `uid` (`uid`,`did`),
+  KEY `name` (`uid`,`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户文件表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -261,6 +262,8 @@ CREATE TABLE `user_xia` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID 自增',
   `uid` int(11) NOT NULL COMMENT '用户ID',
   `xid` int(11) NOT NULL COMMENT '下线用户ID',
+  `add_time` int(11) NOT NULL COMMENT '创建时间',
+  KEY `uid` (`uid`,`xid`),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户下线表';
 /*!40101 SET character_set_client = @saved_cs_client */;
