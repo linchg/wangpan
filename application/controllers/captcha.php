@@ -6,7 +6,7 @@ class Captcha extends MY_Controller {
     //验证码生成地址
     function create() {
         $this->load->library('Kcaptcha');
-        $this->kcaptcha->create();
+        $this->kcaptcha->newcreate();
     }   
     //验证码验证接口
     function verify() {
