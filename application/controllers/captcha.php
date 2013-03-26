@@ -13,10 +13,9 @@ class Captcha extends MY_Controller {
         $this->load->library('Kcaptcha');
         $p = array();
         $p['captcha'] = $this->input->get('captcha', true);
-    
         if(!$this->kcaptcha->verify($p['captcha'])) {
-            $this->json->output(array('r' => 'error', 'm' => $this->error->error_msg()));
+			$this->errorOutput();
         }   
-        $this->json->output(array('r' => 'success'));
+		$this->successOutput();
     }   
 }
