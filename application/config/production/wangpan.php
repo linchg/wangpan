@@ -6,6 +6,8 @@ $config['captcha_h']   = 30;    //验证码图片高度
 $config['captcha_len'] = 5;     //验证码字符长度
 $config['captcha_s'] = 20;     //验证码字符长度
 
+$config['user_pass_prefix'] = 'abc';     //用户的密码md5前缀
+
 //报错设置
 require('error.php');
 
