@@ -22,11 +22,11 @@ class MY_Controller extends CI_Controller {
     public function loginVerify() {
         $siteUrl = $this->passPortUrl();
         if($this->login->is_login() !== true) {
-            redirect($siteUrl.'auth/login?redurl='.urlencode(current_url().$this->build_request(true)), 'refresh');
+            redirect($siteUrl.'auth/login?redurl='.urlencode(current_url().$this->buildRequest(true)), 'refresh');
         }   
     }   
 
-    public passPortUrl(){
+    public function passPortUrl(){
         return config_item('base_url');
     }
        

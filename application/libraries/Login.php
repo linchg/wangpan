@@ -7,7 +7,9 @@ class Login
     }	
 
     public function checkLogin($username, $password){
-        $user = $this->get($username, "username");
+		$this->CI->load->database();
+		$this->CI->load->model('user');
+        $user = $this->CI->user->get($username, "username");
         if(empty($user)){
             return false;
         }

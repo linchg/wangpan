@@ -2,7 +2,7 @@
 class Index extends MY_Controller {
 	public function __construct()
 	{
-		parent::__construct(true);
+		parent::__construct(false);
 	}
 	public function index()
 	{
