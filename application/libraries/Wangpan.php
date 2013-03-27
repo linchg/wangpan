@@ -16,4 +16,47 @@ class Wangpan{
 		$error_list = $this->get('error_list');
 		return $error_list;
 	}
+
+	/*
+	 * js
+	 */
+	function static_url($include = array() ,  $type = SERVICE_NUMBER::JSFILE)
+	{
+		$default_version = $type === SERVICE_NUMBER::JSFILE ? $this->get('static_js_version') : $this->get('static_cs_version');
+		$files	= $type === SERVICE_NUMBER::JSFILE ? $this->get('js') : $this->get('css');	
+		$include = array_fill_keys($include , $default_version);
+		$files = array_intersect_key($files, $include);
+		return $this->static_file_html($files);	
+	}
+	
+	function static_file_html( $files= array() , $type = SERVICE_NUMBER::JSFILE)
+	{
+		$files = is_array($files) ? $files : array($files);
+		$html = '';
+		foreach($files as $file => $v)
+		{
+			if ($type === SERVICE_NUMBER::JSFILE)	
+			{
+				$html.='<script type="text/javascript" src="'.static_url($file).'?v='.$v.'"></script>'."\n";	
+			}
+			else
+			{
+				$html.='<link href="'.static_url($file).'?v='.$v.'" rel="stylesheet" type="text/css" />'."\n";
+			}
+		}
+		return $html;
+	}
+	
+	/*
+	 * 静态文件获取版本
+	 */
+	public function static_version($file , $type = SERVICE_NUMBER::JSFILE)	
+	{
+		if(empty($file)) return '';
+		$files = $type === SERVICE_NUMBER::JSFILE ? $this->get('js') : $this->get('css');	
+		$default_version = $type === SERVICE_NUMBER::JSFILE ? $this->get('static_js_version') : $this->get('static_cs_version');
+		$v = isset($files[$file])? $files[$file] : $default_version;
+		return static_url($file.'?v='.$v);
+	}
 }	
+

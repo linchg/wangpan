@@ -2,7 +2,14 @@
 
 class Template {
 		var $template_data = array();
-			
+		private $_static_url = array(
+			'js_header' ,  'js_footer' , 'css_header' , 'css_footer'
+		);			
+		function __construct()
+		{	
+			$this->CI =& get_instance();
+		}
+
 		function set($name, $value) {
 			$this->template_data[$name] = $value;
 		}
@@ -18,13 +25,21 @@ class Template {
 		}
 		
 		function load($template = '', $return = FALSE) {
-			$this->CI =& get_instance();
 			return $this->CI->load->view($template, $this->template_data, $return);
 		}
 
 		function load_view($template = '', $view = '' , $view_data = array(), $return = FALSE) {
-			$this->CI =& get_instance();
 			$this->set('contents', $this->CI->load->view($view, $view_data, TRUE));
 			return $this->CI->load->view($template, $this->template_data, $return);
 		}
-}
+		
+		function set_static($include = array() , $type = SERVICE_NUMBER::JSFILE ,  $position = SERVICE_NUMBER::FILEFOOTER)
+		{
+			$n = $type ^ $position;	
+			if (isset($this->_static_url[$n]))
+			{
+				$name = $this->_static_url[$n];
+				$this->set($name , $this->CI->wangpan->static_url($include ,  $type));
+			}
+		}  
+}	

@@ -9,8 +9,13 @@ $config['captcha_time_limit'] = 60*60*5;     //验证码字符长度
 
 $config['user_pass_prefix'] = 'abc';     //用户的密码md5前缀
 
+
 //报错设置
 require('error.php');
+
+//js/css文件版本控制
+require('static_file_version.php');
+
 
 //服务返回常量
 require_once('service_number.php');
