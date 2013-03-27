@@ -63,7 +63,7 @@ $autoload['libraries'] = array('session' ,'wangpan', 'template', 'json','error',
 |
 |	$autoload['helper'] = array('url', 'file');
 */
-$autoload['helper'] = array('html', 'url', 'cookie', 'array', 'file', 'string');
+$autoload['helper'] = array('uk' , 'html', 'url', 'cookie', 'array', 'file', 'string');
 
 
 /*

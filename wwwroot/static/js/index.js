@@ -1,0 +1,60 @@
+$(document).ready(function(){
+            $("#s_name").focus(function(){
+               if($("#s_name").val()=="帐号"){
+                   $("#s_name").attr("value","");
+               }
+            });
+            $("#s_name").blur(function(){
+                if($("#s_name").val()==""){
+                    $("#s_name").attr("value","帐号")
+                }
+            })
+            $("#s_code").focus(function(){
+               if($("#s_code").val()=="验证码"){
+                   $("#s_code").attr("value","");
+               }
+            });
+            $("#s_code").blur(function(){
+                if($("#s_code").val()==""){
+                    $("#s_code").attr("value","验证码")
+                }
+            })
+            $("#s_password").click(function(){
+				   $(".PwdStr").html("");
+            });
+            $("#s_password").focus(function(){
+			/*
+               if($("#s_password").val()==""){
+                    $(".PwdStr").html("");
+               }else{
+				   $(".PwdStr").html("");
+				   }
+			*/
+			$(".PwdStr").html("");
+            });
+            $("#s_password").blur(function(){
+                if($("#s_password").val()==""){
+                    $(".PwdStr").html("密码");
+                }else{
+				   $(".PwdStr").html("");
+			   }
+            })
+
+			$("#login").click(function(){
+				if($("#s_name").val()=="帐号"||$("#s_name").val()==""){
+						$("#s_name").focus();
+						alert("请输入登录帐号。");
+						return false;
+				}
+				if($("#s_password").val()==""){
+						$("#s_password").focus();
+						alert("请输入密码。");
+						return false;
+				}
+				if($("#s_code").val()==""||$("#s_code").val()=="验证码"){
+						$("#s_code").focus();
+						alert("请输入验证码。");
+						return false;
+				}
+			})
+     }); 

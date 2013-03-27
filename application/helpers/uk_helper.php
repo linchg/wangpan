@@ -79,4 +79,12 @@ if ( ! function_exists('dataRatio'))
     }
 }
 
+if ( !function_exists('static_url_version'))
+{
+	function static_url_version($file)
+	{
+		$CI = &get_instance();	
+		return $CI->wangpan->static_version($file);
+	}	
+}
 
