@@ -13,166 +13,54 @@ class Auth extends MY_Controller {
     public function login()
     {
         $this->form_validation->set_error_delimiters('<span class="login-errorinfo">','</span>');
-        
-        if($this->session->userdata('id')){ redirect('user/'); }
 
-        if (!$this->input->is_post()){
-            // Set backurl.
-            if (isset($_SERVER['HTTP_REFERER'])){
-                $this->session->set_userdata('http_referer', $_SERVER['HTTP_REFERER']);
-            }
-        }else{
-            $tmpReferer = FALSE;
-            switch ($this->input->post('login_path')) {
-                case 'index':
-                    $tmpReferer = base_url('/');
-                    break;
-            }
+        if($this->login->is_login()) 
+            redirect('user/'); 
 
-            if( $tmpReferer !== FALSE){
-                $this->session->set_userdata('http_referer', $tmpReferer);
-            }
-        }
-        
+        $this->login->setLoginBackUrl();
+
         if ($this->input->is_post()){
+
             $this->load->model('user');
-            
             $tmpLoginErrorTimes = intval($this->session->userdata('login_error_times'));
-            
+
             if ($tmpLoginErrorTimes >= 3){
-                $this->form_validation->set_rules('captcha', '验证码', 'trim|required|exact_length[4]|alpha_numeric|callback_check_captcha');
-                $tmpRe = $this->check_captcha($this->input->post('captcha'));
+                $tmpRe = $this->login->checkCaptcha($this->input->post('captcha'));
                 if ($tmpRe === FALSE){
                     $this->form_validation->error('captcha','','','验证码 错误');
-                }else{
-                    $this->form_validation->set_rules('username', '帐号', 'trim|required|min_length[4]|max_length[20]|alpha_numeric|callback_check_user_exist');
-                    $this->form_validation->set_rules('password', '密码', 'trim|required|min_length[6]|max_length[20]|callback_check_password');
                 }
-            }else{
-                $this->form_validation->set_rules('username', '帐号', 'trim|required|min_length[4]|max_length[20]|alpha_numeric|callback_check_user_exist');
-                $this->form_validation->set_rules('password', '密码', 'trim|required|min_length[6]|max_length[20]|callback_check_password');
             }
-
+            $this->form_validation->set_rules('username', '帐号', 'trim|required|min_length[4]|max_length[20]|alpha_numeric|callback_check_user_exist');
+            $this->form_validation->set_rules('password', '密码', 'trim|required|min_length[6]|max_length[20]|callback_check_password');
             $tmpRe = $this->form_validation->run();
 
             if ($tmpRe === TRUE){
-                $user_array = array(
-                    'login_ip' => $this->input->ip_address(),
-                    'login_time' => time(),
-                );
-                $this->user->update($user_array, array('id' => $this->user_data['id']));
-                
-                $user_data = array(
-                    'id' => $this->user_data['id'],
-                    'email' => $this->user_data['email'],
-                    'mobile' => $this->user_data['mobile'],
-                    'username' => $this->user_data['username'],
-                    'login_error_times' => 0
-                );
+                $this->login->updateUserLogin($this->user_data['id']);
+                $this->login->setUserSession($this->user_data);
+                $this->login->setUserCookie($this->user_data,$this->input->post('autologin') == 'yes');
+                // Go backurl
+                redirect($this->login->getLoginBackUrl());
 
-                // 处理：日志，活跃用户。
-                $this->load->helpers('date');
-                $tmpTimeEnd = human_to_unix(mdate('%Y-%m-%d', time()).' 0:0:0');
-                $tmpTimeStart = $tmpTimeEnd - 24*3600;
-
-                if ( $this->user_data['create_time'] >= $tmpTimeStart AND $this->user_data['create_time'] <= $tmpTimeEnd ){
-                    $user_data['regtime'] = $this->user_data['create_time'];
-                }
-
-                $this->session->set_userdata($user_data);
-                
-                if( $this->input->post('autologin') == 'yes' ){
-                    $this->input->set_cookie('uid', $user_data['id'], 3600*24*7, '.xy.com');
-                    $this->input->set_cookie('token', md5($user_data['id'].$this->user_data['password'].$this->config->config['sign_key']), 3600*12, '.xy.com');
-                }
-				$this->input->set_cookie('lastuname', $user_data['username'], 3600*24*7, '.xy.com');#最后登录用户名
-                
-                $this->_doSendLoginLog($user_data['id']);
-                $this->_doDiscuzLogin($this->input->post('username'), $this->input->post('password'));
-
-                // Get backurl
-                $tmpBackurl = $this->session->userdata('http_referer');
-
-                if ($tmpBackurl !== FALSE){
-                    $this->session->unset_userdata('http_referer');
-
-                    // 针对直接从论坛点过来的登陆操作，提供中间页调用api地址。
-                    if (strpos($tmpBackurl, 'b.xy.com') !== FALSE){
-                        if ($this->session->userdata('uc_user_synlogin')){
-                            $tmpSynHTML = $this->session->userdata('uc_user_synlogin');
-                            $this->session->unset_userdata('uc_user_synlogin');
-                            $tmpPrint = '
-                                正在跳转……
-                                <div class="hide">
-                                '.$tmpSynHTML.'
-                                </div>
-                                <script type="text/javascript">
-                                window.onload = function(){
-                                    location.href = "'.$tmpBackurl.'";
-                                };
-                                </script>
-                            ';
-                            echo $tmpPrint;
-                            exit;
-                        }
-                    }
-                    
-                    redirect($tmpBackurl);
-                }else{
-					redirect('/account');
-                }
             }else{
                 $this->session->set_userdata('login_error_times', intval($this->session->userdata('login_error_times'))+1);
             }
         }
 
         $tmpLoginErrorTimes = intval($this->session->userdata('login_error_times'));
-
-        //var_dump(intval($this->session->userdata('login_error_times')));
-        $this->load->view('account/login', array('LoginErrorTimes'=>$tmpLoginErrorTimes));
+        $this->display('user/login', array('LoginErrorTimes'=>$tmpLoginErrorTimes));
     }
     
     public function ajax_login() {
-        $this->load->model('user');
+
         $username = htmlspecialchars(trim($this->input->get("username")));
         $password = htmlspecialchars(trim($this->input->get('password')));
 
-        $user = $this->user->checkLogin($username, $password);
-        if ($user AND $this->valid_keep_user($username) !== TRUE) {
-            $user_array = array(
-                'login_ip' => $this->input->ip_address(),
-                'login_time' => time(),
-            );
-            $this->user->update($user_array, array('id' => $user['id']));
-            $user_data = array(
-                'id' => $user['id'],
-                'fid' => $user['fid'],
-                'email' => $user['email'],
-                'mobile' => $user['mobile'],
-                'username' => $user['username'],
-                'login_error_times' => 0
-            );
-            
-            // 处理：日志，活跃用户。   
-            $this->load->helpers('date');             
-            $tmpTimeEnd = human_to_unix(mdate('%Y-%m-%d', time()).' 0:0:0');
-            $tmpTimeStart = $tmpTimeEnd - 24*3600;
+        $user = $this->login->checkLogin($username, $password);
+        if ($user) {
+            $this->login->updateUserLogin($user['id']);
+            $this->login->setUserSession($user);
+            $this->login->setUserCookie($user,$this->input->get('autologin') == 'yes');
 
-            if ( $this->user_data['create_time'] >= $tmpTimeStart AND $this->user_data['create_time'] <= $tmpTimeEnd ){
-                $user_data['regtime'] = $this->user_data['create_time'];
-            }
-
-            $this->session->set_userdata($user_data);
-    
-            if( $this->input->get('autologin') == 'yes' ){
-                $this->input->set_cookie('uid', $user_data['id'], 3600*24*7, '.xy.com');
-                $this->input->set_cookie('token', md5($user_data['id'].$user['password'].$this->config->config['sign_key']), 3600*12, '.xy.com');
-            }
-            $this->input->set_cookie('lastuname', $user_data['username'], 3600*24*7, '.xy.com');#最后登录用户名
-
-            $this->_doSendLoginLog($user_data['id']);
-            $this->_doDiscuzLogin($username, $password);
-        
             echo $_GET['callback'] . "(" . json_encode(array('status' => 'success')) . ")";
         } else {
             echo $_GET['callback'] . "(" . json_encode(array('status' => 'error')) . ")";
@@ -447,13 +335,29 @@ class Auth extends MY_Controller {
 
         $this->load->view('account/forgotpass', $resp);
     }
-    
+
     // callback
     public function check_user_exist($str){
-        if (!$this->_check_user_exist($str)){
+        $user_data = $this->login->checkUserExist($str);
+        if (!$user_data){
             $this->form_validation->set_message('check_user_exist', '%s 不存在.');
             return false;
         }
+        $this->user_data = $user_data;
+        return true;
+    }
+
+    //callback
+    public function check_password($password){
+        $uid = $this->session->userdata('id');
+        $user = $this->login->checkPassword($uid,$password,$this->user_data);
+        if(!$user)
+        {
+            $this->form_validation->set_message('check_password', '%s 错误.');
+            return false;
+        }
+        if (!is_array($this->user_data))
+            $this->user_data = $user;
         return true;
     }
     
@@ -561,13 +465,6 @@ class Auth extends MY_Controller {
         return true;
     }
     
-    private function _check_user_exist($str){
-        if ($this->valid_keep_user($str)){ return true; }
-
-        $this->user_data = $this->user->get($str, 'username');
-        if (count($this->user_data) === 0){ return false; }
-        return true;
-    }
     
     private function valid_keep_user($str)
     {
@@ -575,28 +472,6 @@ class Auth extends MY_Controller {
         return ( preg_match("/^([0-9]{4,6}|(6|8|9){4,20}|(51|5)(8|9){3,8}|1(0){4,10})$/i", $str)) ? TRUE : FALSE;
     }
     
-    public function check_password($str){
-        if (!is_array($this->user_data)){ $this->user_data = $this->user->get($this->session->userdata('id')); }
-        if (count($this->user_data)>1){
-            if (md5(config_item('user_pass_prefix').$str) === $this->user_data['password']){
-                return true;
-            }else{
-                $this->form_validation->set_message('check_password', '%s 错误.');
-                return false;
-            }
-        }
-    }
-    
-    public function check_captcha($str){
-        $capt = strtolower($this->session->userdata('captcha_word'));
-        if (strtolower($str) !== $capt){
-            $this->form_validation->set_message('check_captcha', '%s 错误.');
-            return false;
-        }
-        
-        $this->session->set_userdata('login_error_times', 0);
-        return true;
-    }
     
     private function _send_email($email, $title, $content){
         $this->load->library('email');
@@ -609,7 +484,6 @@ class Auth extends MY_Controller {
         return $this->email->send();
         //echo $this->email->print_debugger();
     }
-
 }
 
 /* End of file  */
