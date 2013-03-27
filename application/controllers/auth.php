@@ -75,8 +75,8 @@ class Auth extends MY_Controller {
     public function register()
     {
         $this->form_validation->set_error_delimiters('<div for="%s" class="ui-reg-info ui-reg-info-error"><span><em>','</em></span></div>');
-        
-        if($this->session->userdata('id')){ redirect('account/'); }
+        if($this->login->is_login()) 
+            redirect('user/'); 
         
         if ($this->input->is_post()){
             $this->load->model('user');
@@ -95,40 +95,20 @@ class Auth extends MY_Controller {
                     'create_ip' => $this->input->ip_address(),
                     'login_time' => time(),
                     'login_ip' => $this->input->ip_address(),
-                        
                     'real_name' => '',
                     'real_card' => '',
                     'email' => '',
                     'mobile' => ''
                 );
                 $userid = $this->user->create($user_array);
+                $user_array['id'] = $userid;
+                $this->login->setUserSession($user_array);
+                $this->login->setUserCookie($user_array,false);
+                redirect($this->login->getLoginBackUrl());
 
-                if (isset($_COOKIE['advid'])){
-                    $this->load->library('redis');
-                    $this->redis->push('reg|'.time().'|'.$userid.'|adv_'.$_COOKIE['advid'].'|gid_'.$_COOKIE['gid'].'|site_0|');
-                }
-                
-                $this->session->set_userdata(array(
-                    'id' => $userid,
-                    'regtime' => time(),
-                    'username' => $user_array['username']
-                ));
-                
-                $this->_doSendRegisterLog($userid, $user_array['username'], $user_array['password']);
-                $this->_doSendLoginLog($userid);
-                $this->_doDiscuzLogin($this->input->post('username'), $this->input->post('password'));
-                
-                // Get backurl
-                $tmpBackurl = $this->session->userdata('http_referer');
-                if ($tmpBackurl){
-                    $this->session->unset_userdata('http_referer');
-                    redirect($tmpBackurl);
-                }else{
-                    redirect('account/');
-                }
             }
         }
-        $this->load->view('account/register');
+        $this->display('user/register');
     }
 
     public function ajax_register() {
@@ -177,17 +157,9 @@ class Auth extends MY_Controller {
             'advid' => $advid
         );
         $userid = $this->user->create($user_array);
-
-        if ($advid > 0){
-            $this->load->library('redis');
-            $this->redis->push('reg|'.time().'|'.$userid.'|adv_'.$advid.'|gid_'.$gid.'|site_'.$siteid.'|');
-        }
-
-        $this->session->set_userdata(array(
-            'id' => $userid,
-            'regtime' => time(),
-            'username' => $user_array['username']
-        ));
+        $user_array['id'] = $userid;
+        $this->login->setUserSession($user_array);
+        $this->login->setUserCookie($user_array,false);
         
         // Fuck IE!!! By Wangyu.
         $tmpJsonData = array(
@@ -199,8 +171,49 @@ class Auth extends MY_Controller {
         $this->_doJsonCallback($tmpJsonData);
     }
 
-    private function _doJsonCallback($strAry){
-        echo $_GET['jsoncallback'] . "(" . json_encode($strAry) . ")";
+
+    public function sendmobile()
+    {
+        if (strlen($this->session->userdata('mobile')) == 11 ){
+
+            if ($this->session->userdata('mobile_checkcode')){
+                $tmpRandomCode = $this->session->userdata('mobile_checkcode');
+            }else{
+                $tmpRandomCode = mt_rand(1000, 9999);
+            }
+
+            $this->session->set_userdata(array('mobile_checkcode' => $tmpRandomCode));
+
+            $tmpRe = $this->sendmobile->doSendSMS($this->session->userdata('mobile'), '您的短信验证码为：'.$tmpRandomCode.' [XY游戏 http://www.xy.com]');
+
+            echo $tmpRe;
+            exit;
+        }
+    }
+
+    public function checkcode(){
+        if( intval($this->session->userdata('checkcode_error_times')) > 10 ){ echo 'false'; exit; }
+            if($this->check_mobile_checkcode($this->input->get('checkcode'))){
+                echo 'true';
+                $this->session->set_userdata('_forgotpass_mobile_check', 'yes');
+            }else{
+                echo 'false';
+                $this->session->set_userdata('_forgotpass_mobile_check', 'no');
+                $this->session->set_userdata('checkcode_error_times', intval($this->session->userdata('checkcode_error_times'))+1);
+            }
+        exit;
+    }
+
+    public function mobilesetpass(){ 
+
+        if( $this->session->userdata('_forgotpass_mobile_check') == 'yes' ){
+            $time = time();
+            $sign = md5($this->session->userdata('_username') . $time . $this->config->config['sign_key']);
+            $url = site_url('account/setpass?username='.$this->session->userdata('_username').'&time='.$time.'&sign='.$sign);
+            redirect($url);
+        }
+
+        redirect('/');
     }
 
     public function forgotpass($type=false)
@@ -215,50 +228,6 @@ class Auth extends MY_Controller {
         $step = $this->session->userdata('_step');
         if (!$step){ $step = 1; }
 
-        if($type=='sendmobile'){
-            if (strlen($this->session->userdata('mobile')) == 11 ){
-
-                if ($this->session->userdata('mobile_checkcode')){
-                    $tmpRandomCode = $this->session->userdata('mobile_checkcode');
-                }else{
-                    $tmpRandomCode = mt_rand(1000, 9999);
-                }
-
-                $this->session->set_userdata(array('mobile_checkcode' => $tmpRandomCode));
-                
-                $tmpRe = $this->sendmobile->doSendSMS($this->session->userdata('mobile'), '您的短信验证码为：'.$tmpRandomCode.' [XY游戏 http://www.xy.com]');
-
-                echo $tmpRe;
-                exit;
-            }
-        }
-        
-        if($type=='checkcode'){
-            if( intval($this->session->userdata('checkcode_error_times')) > 10 ){ echo 'false'; exit; }
-            if($this->check_mobile_checkcode($this->input->get('checkcode'))){
-                echo 'true';
-                $this->session->set_userdata('_forgotpass_mobile_check', 'yes');
-            }else{
-                echo 'false';
-                $this->session->set_userdata('_forgotpass_mobile_check', 'no');
-                $this->session->set_userdata('checkcode_error_times', intval($this->session->userdata('checkcode_error_times'))+1);
-            }
-            exit;
-        }
-        
-        if($type=='mobilesetpass'){
-
-            if( $this->session->userdata('_forgotpass_mobile_check') == 'yes' ){
-                $time = time();
-                $sign = md5($this->session->userdata('_username') . $time . $this->config->config['sign_key']);
-                
-                $url = site_url('account/setpass?username='.$this->session->userdata('_username').'&time='.$time.'&sign='.$sign);
-                
-                redirect($url);
-            }
-            
-            redirect('/');
-        }
 
         if ($this->input->is_post()){
             $this->form_validation->set_error_delimiters('<div for="%s" class="ui-reg-info ui-reg-info-error ml8"><span><em>','</em></span></div>');
@@ -337,8 +306,8 @@ class Auth extends MY_Controller {
     }
 
     // callback
-    public function check_user_exist($str){
-        $user_data = $this->login->checkUserExist($str);
+    public function check_user_exist($username){
+        $user_data = $this->login->checkUserExist($username);
         if (!$user_data){
             $this->form_validation->set_message('check_user_exist', '%s 不存在.');
             return false;
@@ -358,6 +327,24 @@ class Auth extends MY_Controller {
         }
         if (!is_array($this->user_data))
             $this->user_data = $user;
+        return true;
+    }
+
+    //callback
+    public function check_user_register($username){
+        if ($this->login->checkUserExist($username)){
+            $this->form_validation->set_message('check_user_register', '%s 已经存在.');
+            return false;
+        }
+        return true;
+    }
+
+    //callback
+    public function check_pact($str){
+        if ($str !== 'yes'){
+            $this->form_validation->set_message('check_pact', '%s 必须勾选.');
+            return false;
+        }
         return true;
     }
     
@@ -429,13 +416,6 @@ class Auth extends MY_Controller {
         }
     }
 
-    public function check_pact($str){
-        if ($str !== 'yes'){
-            $this->form_validation->set_message('check_pact', '%s 必须勾选.');
-            return false;
-        }
-        return true;
-    }
     
     public function check_username_format($str){
         if ( $this->form_validation->valid_email($str) OR $this->form_validation->alpha_numeric($str) ){ return true; }
@@ -443,13 +423,6 @@ class Auth extends MY_Controller {
         return false;
     }
     
-    public function check_user_register($str){
-        if ($this->_check_user_exist($str)){
-            $this->form_validation->set_message('check_user_register', '%s 已经存在.');
-            return false;
-        }
-        return true;
-    }
     
     public function check_email_register($str){
         if ($this->_check_email_exist($str)){
@@ -465,14 +438,6 @@ class Auth extends MY_Controller {
         return true;
     }
     
-    
-    private function valid_keep_user($str)
-    {
-        if (strtolower($str) === 'admin') { return true; }
-        return ( preg_match("/^([0-9]{4,6}|(6|8|9){4,20}|(51|5)(8|9){3,8}|1(0){4,10})$/i", $str)) ? TRUE : FALSE;
-    }
-    
-    
     private function _send_email($email, $title, $content){
         $this->load->library('email');
         $this->email->from('kingnettest@163.com', 'Kingnet Services');
@@ -482,7 +447,10 @@ class Auth extends MY_Controller {
         $this->email->message($content); 
         
         return $this->email->send();
-        //echo $this->email->print_debugger();
+    }
+
+    private function _doJsonCallback($strAry){
+        echo $_GET['jsoncallback'] . "(" . json_encode($strAry) . ")";
     }
 }
 
