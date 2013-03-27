@@ -21,10 +21,19 @@ class Login
             return false;
         }
 
-        if($user['password'] === md5(config_item('user_pass_prefix').$password))
+        if($user['password'] === $this->getPassword($password))
             return $user;
 
         return false;
+    }
+
+    public function getLoginToken($uid,$password){
+        $sign_key = config_item('sign_key');
+        return md5($uid.$password.$sign_key);
+    }
+
+    public function getPassword($password) {
+        return md5(config_item('user_pass_prefix').$password);
     }
 
     public function checkPassword($uid,$password,$user_data=array()){
@@ -37,7 +46,7 @@ class Login
                 return false;
             }
         }
-        if($user['password'] === md5(config_item('user_pass_prefix').$password))
+        if($user['password'] === $this->getPassword($password))
             return $user;
 
         return false;
@@ -124,10 +133,9 @@ class Login
     public function setUserCookie($user_data,$autologin=false){
 
         $domain = config_item('cookie_domain');
-        $sign_key = config_item('sign_key');
 
         if( $autologin ){
-            $this->CI->input->set_cookie('token', md5($user_data['id'].$user_data['password'].$sign_key), 3600*12, $domain);
+            $this->CI->input->set_cookie('token', $this->getLoginToken($user_data['id'],$user_data['password']), 3600*12, $domain);
         }
         $this->CI->input->set_cookie('uid', $user_data['id'], 3600*24*7, $domain);
         $this->CI->input->set_cookie('lastuname', $user_data['username'], 3600*24*7, $domain);#最后登录用户名
@@ -176,5 +184,35 @@ class Login
         $this->unsetUserSession();
         return true;
 	}
+
+    public function sendResetPassMail(){
+        $time = time();
+        $username = $this->CI->session->userdata('_username');
+        if(empty($username))
+            return false;
+        $sign = md5($username . $time . config-item('sign_key'));
+
+        $url = site_url('auth/resetpass?username='.$username.'&time='.$time.'&sign='.$sign);
+
+
+        $title = 'XY游戏 —— 邮箱找回密码';
+        $content = '
+            <b>亲爱的XY游戏用户：</b><br />
+            &nbsp;&nbsp;&nbsp;&nbsp;您好！<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;感谢您使用XY游戏平台密码找回功能，请点击以下链接重新设置密码：<br /><br />
+            &nbsp;&nbsp;&nbsp;&nbsp;'.$url.'<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;<font color=gray>(如果您无法点击此链接，请将它复制到浏览器地址栏后访问)</font><br /><br />
+            &nbsp;&nbsp;&nbsp;&nbsp;为了保证您帐号的安全，该链接有效期为24小时<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;如非本人操作，可能是有用户误输入您的邮箱地址，您可以忽略此邮件，由此给您带来的不便敬请谅解！<br />
+            <br />
+            XY游戏平台<br />
+            '.mdate('%Y年%m月%d日').'<br />
+            ';
+
+
+        $this->CI->load->helper('uk');
+        sendEmail($this->session->userdata('email'), $title, $content);
+        return true;
+    }
 }
 

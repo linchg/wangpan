@@ -90,13 +90,11 @@ class Auth extends MY_Controller {
                 // for table: user
                 $user_array = array(
                     'username' => $this->input->post('username'),
-                    'password' => md5($this->input->post('password')),
+                    'password' => $this->login->getPassword($this->input->post('password')),
                     'create_time' => time(),
                     'create_ip' => $this->input->ip_address(),
                     'login_time' => time(),
                     'login_ip' => $this->input->ip_address(),
-                    'real_name' => '',
-                    'real_card' => '',
                     'email' => '',
                     'mobile' => ''
                 );
@@ -115,11 +113,6 @@ class Auth extends MY_Controller {
         $this->load->model('user');
         $username = htmlspecialchars(trim($this->input->get("username")));
         $password = htmlspecialchars(trim($this->input->get('password')));
-        $siteid = intval($this->input->get('siteid'));
-        $advid = intval($this->input->get('advid'));
-        $gid = intval($this->input->get('gid'));
-
-        $this->setadvid($advid, $gid);
 
         if(strlen($username) < 4 OR strlen($username) > 20){
             $this->_doJsonCallback(array('status' => 'error1'));
@@ -143,18 +136,13 @@ class Auth extends MY_Controller {
         
         $user_array = array(
             'username' => $username,
-            'password' => md5($password),
+            'password' => $this->login->getPassword($password),
             'create_time' => time(),
             'create_ip' => $this->input->ip_address(),
             'login_time' => time(),
             'login_ip' => $this->input->ip_address(),
-                
-            'real_name' => '',
-            'real_card' => '',
             'email' => '',
             'mobile' => '',
-            
-            'advid' => $advid
         );
         $userid = $this->user->create($user_array);
         $user_array['id'] = $userid;
@@ -165,7 +153,7 @@ class Auth extends MY_Controller {
         $tmpJsonData = array(
             'status'=>'success',
             'uid'=>$userid,
-            'token'=>md5($userid.$user_array['password'].$this->config->config['sign_key'])
+            'token'=>$this->login->getLoginToken($userid,$user_array['password'])
         );
         
         $this->_doJsonCallback($tmpJsonData);
@@ -174,6 +162,7 @@ class Auth extends MY_Controller {
 
     public function sendmobile()
     {
+        $this->load->library('sendmobile');
         if (strlen($this->session->userdata('mobile')) == 11 ){
 
             if ($this->session->userdata('mobile_checkcode')){
@@ -209,25 +198,27 @@ class Auth extends MY_Controller {
         if( $this->session->userdata('_forgotpass_mobile_check') == 'yes' ){
             $time = time();
             $sign = md5($this->session->userdata('_username') . $time . $this->config->config['sign_key']);
-            $url = site_url('account/setpass?username='.$this->session->userdata('_username').'&time='.$time.'&sign='.$sign);
+            $url = site_url('auth/resetpass?username='.$this->session->userdata('_username').'&time='.$time.'&sign='.$sign);
             redirect($url);
         }
 
         redirect('/');
     }
 
-    public function forgotpass($type=false)
+    public function resetpass(){
+    }
+
+    public function forgetpass($type=false)
     {
-        if($this->session->userdata('id')){ redirect('account/'); }
+        if($this->login->is_login())
+            redirect('account/'); 
+
         $this->load->model('user');
         $this->load->helper('string');
-        $this->load->library('sendmobile');
-        
+
         $resp = array();
-        
         $step = $this->session->userdata('_step');
         if (!$step){ $step = 1; }
-
 
         if ($this->input->is_post()){
             $this->form_validation->set_error_delimiters('<div for="%s" class="ui-reg-info ui-reg-info-error ml8"><span><em>','</em></span></div>');
@@ -241,68 +232,34 @@ class Auth extends MY_Controller {
                     '_forgotpass' => 'yes',
                 );
                 $this->session->set_userdata($tmpAryData);
-
                 $this->session->set_userdata('_step', $step++);
+                redirect('auth/forgetpass');
+            }else{
+                $this->session->unset_userdata('_step');
+                redirect('auth/forgetpass');
             }
-        }else{
-            $step = 1;
-            $this->session->set_userdata('_step', $step);
         }
-        
+
         if ($type){
-            if ( $this->session->userdata('_forgotpass') == 'yes' ){
-                $step = 3;
-                $resp['type'] = $type;
+            if($this->session->userdata('_forgotpass') !== 'yes' ){
+                $this->session->unset_userdata('_step');
+                redirect('auth/forgetpass');
+            }else{
+                $step++;
             }
         }
-        
-        switch ($step){
-            case 2:
-                
-                $user_data = array();
-                $user_data = $this->user->get($this->user_data['id']);
-                $resp['user_data'] = $user_data;
-                break;
-            case 3:
-                if ($type=='email'){
-                    $time = time();
-                    $sign = md5($this->session->userdata('_username') . $time . $this->config->config['sign_key']);
-                    
-                    $url = site_url('account/setpass?username='.$this->session->userdata('_username').'&time='.$time.'&sign='.$sign);
 
-                
-                    $title = 'XY游戏 —— 邮箱找回密码';
-                    $content = '
-                        <b>亲爱的XY游戏用户：</b><br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;您好！<br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;感谢您使用XY游戏平台密码找回功能，请点击以下链接重新设置密码：<br /><br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;'.$url.'<br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;<font color=gray>(如果您无法点击此链接，请将它复制到浏览器地址栏后访问)</font><br /><br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;为了保证您帐号的安全，该链接有效期为24小时<br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;如非本人操作，可能是有用户误输入您的邮箱地址，您可以忽略此邮件，由此给您带来的不便敬请谅解！<br />
-                        <br />
-                        XY游戏平台<br />
-                        '.mdate('%Y年%m月%d日').'<br />
-                    ';
-                    
-                    
-                    if($this->_send_email($this->session->userdata('email'), $title, $content)){
-                        //$message['message'] = 'Success! check your email inbox.';
-                    }else{
-                        //$message['message'] = 'Failure! please re-post.';
-                    }
-                    
-                    $resp['mail_web'] = 'http://mail.'.substr($this->session->userdata('email'), strpos($this->session->userdata('email'),'@')+1);
-                }elseif($type='mobile'){
-
-
-                }
-                break;
+        if($step == 3){
+            if ($type=='email'){
+                $this->login->sendResetPassMail();
+            }elseif($type='mobile'){
+                $this->login->sendResetMobile();
+            }
+            $step++;
         }
 
-        $resp['step'] = $step;
-
-        $this->load->view('account/forgotpass', $resp);
+        $this->session->set_userdata('_step',$step);
+        $this->display('auth/forgetpass', $resp);
     }
 
     // callback
@@ -436,17 +393,6 @@ class Auth extends MY_Controller {
         $this->user_data = $this->user->get($str, 'email');
         if (count($this->user_data) === 0){ return false; }
         return true;
-    }
-    
-    private function _send_email($email, $title, $content){
-        $this->load->library('email');
-        $this->email->from('kingnettest@163.com', 'Kingnet Services');
-        $this->email->to($email); 
-        
-        $this->email->subject($title);
-        $this->email->message($content); 
-        
-        return $this->email->send();
     }
 
     private function _doJsonCallback($strAry){
