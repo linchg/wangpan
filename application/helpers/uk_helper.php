@@ -23,6 +23,20 @@ if ( ! function_exists('dateToString'))
     }
 }
 
+if ( ! function_exists('sendEmail'))
+{
+    function sendEmail($email, $title, $content){
+        $CI = &get_instance();
+        $CI->load->library('email');
+        $CI->email->from('kingnettest@163.com', 'Kingnet Services');
+        $CI->email->to($email); 
+
+        $CI->email->subject($title);
+        $CI->email->message($content); 
+
+        return $CI->email->send();
+    }
+}
 
 if ( ! function_exists('dataRatio'))
 {
