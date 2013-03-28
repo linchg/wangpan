@@ -1,30 +1,3 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-<meta charset="utf-8">
-<title>用户注册 - 一木禾网盘</title>
-<link href="n_style/index.css" rel="stylesheet" type="text/css" />
-<SCRIPT language="JavaScript" type="text/javascript" src="n_js/jquery.js"></SCRIPT>
-<SCRIPT language="JavaScript" type="text/javascript" src="n_js/register.js"></SCRIPT>
-</head>
-
-<body>
-<div id="banner">
-<div id=subtop>
-<div class="top_width">
-<div class="logo"><a href="/" title="一木禾网盘"><img src="n_images/logo_black.jpg"></a></div>
-<div class="subtop1">
-<a href="/">首页</a>
-<a href="/n_money.html">网盘赚钱</a>
-<a href="/n_member/shop.php">积分兑换</a>
-<a href="/n_faq.html">常见问题</a>
-<a href="/n_about.html">关于网盘</a>
-</div>
-</div>
-</div>
-<div class="child" style="height:50px;"></div>
-</div>
-
 <div id="maincontent2" style="margin:40px auto">
 <div class="sharp color1" style="width:100%;">
 <b class="b1"></b>
@@ -172,18 +145,4 @@
 </div>
 <div class="clear"></div>
 </div>
-
-<div id="bottom3">
-  <table width="980" border="0" align="center" cellpadding="6" cellspacing="0">
-    <tr>
-      <td width="980" valign="top"><hr size="1"></td>
-    </tr>
-    <tr>
-      <td align="center"><span class="friend1">版权信息：Copyright @ 2007-2012 YiMuHe.com All rights reserved. 一木禾网盘(yimuhe.com) 版权所有</span></td>
-    </tr>
-  </table>
-</div>
-<div style="display:none"><script src="http://s5.cnzz.com/stat.php?id=4551662&web_id=4551662" language="JavaScript"></script></div>
-</body>
-</html>
 

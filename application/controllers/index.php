@@ -8,6 +8,7 @@ class Index extends MY_Controller {
 	{
 		$this->template->set_chunk('content' , 'indexContent' , array());  
 		$this->template->set_static(array('static/js/index.js'));  
+		$this->template->set_menu();  
 		$this->template->load('index');
 	}
 

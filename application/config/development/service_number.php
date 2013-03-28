@@ -5,9 +5,13 @@ class SERVICE_NUMBER
 	const ERROR = 0;//失败
 
 	
-	const FILEHEADER = 1;
-	const FILEFOOTER = 0;
+	const FILEHEADER = 1; //文件插在头部
+	const FILEFOOTER = 0; //文件插在尾部
 
-	const CSSFILE = 2;
-	const JSFILE = 1;
+	const CSSFILE = 2; //css文件
+	const JSFILE = 1;//js文件
+
+	const DEFAULT_MENU=1;//网站默认菜单
+	const USER_MENU=2;//用户登录菜单
+	const ADMIN_MENU = 3;//管理后台菜单
 }

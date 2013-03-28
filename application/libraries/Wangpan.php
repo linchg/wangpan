@@ -18,7 +18,7 @@ class Wangpan{
 	}
 
 	/*
-	 * js
+	 * 静态js/css文件 
 	 */
 	function static_url($include = array() ,  $type = SERVICE_NUMBER::JSFILE)
 	{
@@ -58,5 +58,43 @@ class Wangpan{
 		$v = isset($files[$file])? $files[$file] : $default_version;
 		return static_url($file.'?v='.$v);
 	}
+
+	/*
+	 * 菜单管理 
+	 */
+	public function menu($type = SERVICE_NUMBER::DEFAULT_MENU , $select = '')	
+	{
+		$type = empty($type) ? SERVICE_NUMBER::DEFAULT_MENU:intval($type);
+		$select = strval($select); 
+		switch ($type)
+		{
+			case SERVICE_NUMBER::DEFAULT_MENU:
+				$menuName = 'default_menu';	
+				$menuClass = 'default_class';
+				break;
+			case SERVICE_NUMBER::USER_MENU:
+				$menuName = 'default_menu';	
+				$menuClass = 'default_class';
+				break;
+			case SERVICE_NUMBER::ADMIN_MENU:
+				$menuName = 'default_menu';	
+				$menuClass = 'default_class';
+				break;
+			default:
+				$menuName = 'default_menu';	
+				$menuClass = 'default_class';
+				break;
+		}
+		$menu = $this->get($menuName);
+		$class = $this->get($menuClass);
+		$tmp = array();
+		if (isset($menu[$select]))
+		{
+			$menu[$select]['style'] = $class;
+		}
+		return $menu;
+	}
+
+
 }	
 

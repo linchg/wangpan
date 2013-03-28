@@ -24,7 +24,7 @@ class Template {
 			$this->set($name , $trunk);	
 		}
 		
-		function load($template = '', $return = FALSE) {
+		function load($template = '',$return = FALSE) {
 			return $this->CI->load->view($template, $this->template_data, $return);
 		}
 
@@ -42,4 +42,12 @@ class Template {
 				$this->set($name , $this->CI->wangpan->static_url($include ,  $type));
 			}
 		}  
+
+		function set_menu($type = SERVICE_NUMBER::DEFAULT_MENU)
+		{
+			$router = $this->CI->uri->uri_string();
+			if (empty($router)) $router = 'index';
+			$menu = $this->CI->wangpan->menu($type , $router);
+			$this->set('content_menus' , $menu);	
+		}
 }	

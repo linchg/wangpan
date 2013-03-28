@@ -45,7 +45,7 @@
           </li>
           <li>
 <input id="login" name="" type="image" src="<?php echo static_url('static/images/but1.jpg');?>">
-<a href="n_reg_user.html" target="_top"><img src="<?php echo static_url('static/images/but2.jpg');?>" width="110" height="35" /></a>
+<a href="/auth/register" target="_top"><img src="<?php echo static_url('static/images/but2.jpg');?>" width="110" height="35" /></a>
 <input name="type" type="hidden" id="type" value="login">
 <br />
 <a href="http://wpa.qq.com/msgrd?V=1&Uin=45995086&Site=www.yimuhe.com&Menu=no" title="忘记密码直接Q客服。" target="_blank" style="font-size:11px; color:#4476af; float:left;margin:3px 0px 0px 0px;">忘记密码？</a>

@@ -5,7 +5,8 @@ $config['static_cs_version'] = '201303';
 //js
 $config['js'] = array(
 	'static/js/jquery.min.js' => '201304' , 
-	'static/js/index.js' => '201305'
+	'static/js/index.js' => '201305',
+	'static/js/register.js' => '201305',
 );
 
 //css

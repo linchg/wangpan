@@ -16,6 +16,10 @@ require('error.php');
 //js/css文件版本控制
 require('static_file_version.php');
 
+//菜单
+require('menu.php');
+
+
 
 //服务返回常量
 require_once('service_number.php');

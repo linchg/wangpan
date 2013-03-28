@@ -21,14 +21,26 @@ echo isset($css_header) ? $css_header : '';
 <div class="subtop1">
 <div id="hot"><img src="n_images/hot1.gif"></div>
 <div id="new"><img src="n_images/new1.gif"></div>
-<a href="/" class="on">首页</a>
-<a href="/n_money.html">网盘赚钱</a>
-<a href="/n_member/shop.php">积分兑换</a>
-<a href="/n_faq.html">常见问题</a>
-<a href="/n_about.html">关于网盘</a>
+<?php
+$menu = isset($content_menus) ? $content_menus : array();
+foreach ($menu as $url => $v)
+{
+	echo '<a href="/'.$url.'" class="'.$v['style'].'">'.$v['title'].'</a>';
+}
+?>
 </div>
 </div>
 </div>
+<?php
+switch($this->menu)
+{
+	case 'auth':
+		echo '<div class="child" style="height:50px;"></div>';
+		break;
+	default:
+		break;
+}
+?>
 </div>
 
 
