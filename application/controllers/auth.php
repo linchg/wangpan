@@ -74,11 +74,11 @@ class Auth extends MY_Controller {
     
     public function register()
     {
-        $this->form_validation->set_error_delimiters('<div for="%s" class="ui-reg-info ui-reg-info-error"><span><em>','</em></span></div>');
-        if($this->login->is_login()) 
-            redirect('user/'); 
+        //$this->form_validation->set_error_delimiters('<div for="%s" class="ui-reg-info ui-reg-info-error"><span><em>','</em></span></div>');
+        //if($this->login->is_login()) 
+         //   redirect('user/'); 
         
-        if ($this->input->is_post()){
+        /*if ($this->input->is_post()){
             $this->load->model('user');
 
             $this->form_validation->set_rules('pact', '通行证协议', 'trim|callback_check_pact');
@@ -106,7 +106,13 @@ class Auth extends MY_Controller {
 
             }
         }
-        $this->display('user/register');
+		*/
+		$this->title = '兴趣盘－注册用户';
+		$this->template->set_chunk('content' , 'reg' , array());
+		$this->template->set_static(array('static/js/register.js' , 'static/js/mail.tip.js'));
+		$this->template->set_static(array('static/css/index.css') , SERVICE_NUMBER::CSSFILE , SERVICE_NUMBER::FILEHEADER);
+		$this->template->set_menu();
+		$this->template->load('index');			
     }
 
     public function ajax_register() {

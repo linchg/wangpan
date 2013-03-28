@@ -3,7 +3,7 @@
 class Template {
 		var $template_data = array();
 		private $_static_url = array(
-			'js_header' ,  'js_footer' , 'css_header' , 'css_footer'
+			'js_header' ,  'js_footer' , 'css_footer' , 'css_header'
 		);			
 		function __construct()
 		{	

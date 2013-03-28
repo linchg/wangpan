@@ -7,8 +7,17 @@ $config['captcha_len'] = 5;     //验证码字符长度
 $config['captcha_s'] = 20;     //验证码字符长度
 $config['captcha_time_limit'] = 60*60*5;     //验证码字符长度
 
-$config['user_pass_prefix'] = 'abc';     //用户的密码md5前缀
+$config['login_expire'] = 3600;//登录过期时间
 
+$config['encryption_key'] = 'd520a6bd4519f51b09d4c30b0da5f5b0'; //日志加密密码
+
+$config['user_pwd_prefix'] = 'abc'; //用户密码加密
+
+
+//md5
+$config['md5_key'] = array(
+	'0000' => 'abc', //用户的密码md5前缀
+);
 
 //报错设置
 require('error.php');

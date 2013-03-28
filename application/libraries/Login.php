@@ -2,217 +2,135 @@
 class Login
 {
   	private $CI;
-
+	private $_session_key = 'user';
+	private $_cookie_key = array(
+		'uid' => 'uid' , 'token' => 'token' , 'lastuname' => 'username'
+	);
     public function __construct() {
         $this->CI =& get_instance();
     }	
 
-    public function reserveUserName($name){
+	//是否登录
+	public function is_login() {
+		$uid = get_cookie('uid'); //uid
+		$token = get_cookie('token');//token
+		$user_info = $this->get_login_user(); 
+		if(!empty($user_info['username']) && $token == $user_info['token'] && $uid == $user_info['uid']) {
+			//判断用户是否登录超时
+			$current_ts = time();
+			if(empty($user_info['login_ts'])
+					|| $current_ts - $user_info['login_ts'] > $this->CI->wangpan->get('login_expire')) {
+				$this->clear_user_login();
+				return false;
+			}
+			$user_info['login_ts'] = $current_ts;
+			$this->CI->session->set_userdata($this->_session_key , $user_info);
+			return true;
+		}
+		$this->clear_user_login();
+		return false;
+	}	
 
-        if (strtolower($name) === 'admin') 
-            return true; 
-        return ( preg_match("/^([0-9]{4,6}|(6|8|9){4,20}|(51|5)(8|9){3,8}|1(0){4,10})$/i", $name)) ? TRUE : FALSE;
-    }
+	//清理session与cookie
+	public function clear_user_login($destroy = false)
+	{
+		foreach($this->_cookie_key  as $key => $value)
+		{
+			delete_cookie($key);
+		}
+		if ($destroy)
+		{
+			$this->CI->session->sess_destroy();
+			return;
+		}
+		$this->CI->session->unset_userdata($this->_session_key);
+	}
 
-    public function checkLogin($username,$password){
-        $this->CI->load->model('user','',true);
-        $user = $this->CI->user->get($username,'username');
-        if(empty($user)){
-            return false;
-        }
-
-        if($user['password'] === $this->getPassword($password))
-            return $user;
-
-        return false;
-    }
-
-    public function getLoginToken($uid,$password){
-        $sign_key = config_item('sign_key');
-        return md5($uid.$password.$sign_key);
-    }
-
-    public function getPassword($password) {
-        return md5(config_item('user_pass_prefix').$password);
-    }
-
-    public function checkPassword($uid,$password,$user_data=array()){
-
-        if(empty($user_data))
-        {
-            $this->CI->load->model('user','',true);
-            $user = $this->CI->user->get($id);
-            if(empty($user)){
-                return false;
-            }
-        }
-        if($user['password'] === $this->getPassword($password))
-            return $user;
-
-        return false;
-    }
-
-    public function checkUserExist($username){
-
-		$this->CI->load->model('user','',true);
-        $user_data = $this->CI->user->get($username, 'username');
-        if (count($user_data) === 0)
-            return false; 
-        return $user_data;
-    }
-
-    public function checkCaptcha($str){
-        $capt = strtolower($this->CI->session->userdata('captcha_word'));
-        if (strtolower($str) !== $capt){
-            $this->form_validation->set_message('check_captcha', '%s 错误.');
-            return false;
-        }
-        
-        $this->CI->session->set_userdata('login_error_times', 0);
-        return true;
-    }
-
-    public function getLoginBackUrl(){
-
-        $tmpBackurl = $this->CI->session->userdata('http_referer');
-
-        if ($tmpBackurl !== FALSE){
-            $this->CI->session->unset_userdata('http_referer');
-            return $tmpBackurl;
-        }
-        return '/user';
-    }
-
-    public function setLoginBackUrl(){
-
-        if (!$this->CI->input->is_post())
-        {
-            // Set backurl.
-            if (isset($_SERVER['HTTP_REFERER'])){
-                $this->CI->session->set_userdata('http_referer', $_SERVER['HTTP_REFERER']);
-            }
-        }else{
-            $tmpReferer = FALSE;
-            switch ($this->input->post('login_path')) {
-            case 'index':
-                $tmpReferer = base_url('/');
-                break;
-            }
-
-            if( $tmpReferer !== FALSE){
-                $this->CI->session->set_userdata('http_referer', $tmpReferer);
-            }
-        }
-    }
+	//验证token
+	public function get_sig($loginname , $pwd)
+	{
+		$fields = array('username' => $loginname , 'password' => $pwd); 
+		$sig_token = $this->utility->get_md5_sig($fields);
+		return $sig_token;	
+	}
 	
-	public function is_login(){
-        return $this->CI->session->userdata('id') ? true : false;
-	} 
+	//获取当前在线用户
+	public function get_login_user()
+	{
+		return $this->session->userdata($this->_session_key);
+	}
 
-    public function updateUserLogin($uid){
-
-        $uid = (int)$uid;
-        if($uid <= 0)
-            return false;
-
-        $user_array = array(
+	//验证登录用户
+	public function validate($loginname , $password , $site_id = '0000')
+	{
+		log_scribe('trace', 'login', $this->CI->input->ip_address().' ['.current_url().'] LOGIN '.$loginname.', '.$this->CI->utility->mosaic($password).', '.$this->CI->input->ip_address().', '.$site_id);	
+       $pwd = $this->CI->utility->get_pwd_md5($pwd);//验证密码
+		if ($pwd == false) return false;
+		$this->CI->load->model('user','',true);
+		$row = $this->CI->user->get($loginname , 'username');  			
+		if (empty($row)) {
+			$this->CI->error->set_error(20121);
+			return false;
+		} 
+		if ($row['password'] != $pwd)
+		{
+			$this->CI->error->set_error(20122);
+			return false;
+		}
+		$this->update_last_time($row['id']);
+		$this->user_login($row);
+		return $row;
+	}
+	
+	//登录设置	
+	public function user_login($user)
+	{
+		if(empty($user))
+		{
+			$this->CI->error->set_error(20122);
+			return false;
+		}	
+		$token = $this->get_sig($user['username'] , $user['password']);
+		$session_data = array(
+			'username' => $user['username'],
+			'uid' => $user['id'],
+			'token' => $token,
+			'nickname' => $user['nickname'],
+			'login_ts' => time(),
+		);
+		$this->CI->session->set_userdata($this->_session_key , $session_data);
+		foreach($this->_cookie_key as $key => $value)
+		{
+			$cookie = array(
+					'name'   => $key,
+					'value'  => $session_data[$value],
+					'expire' => '0',
+					);
+			set_cookie($cookie);
+		}
+		unset($cookie , $session_data);
+	}
+	
+	//更新最后登录时间/ip
+	public function update_last_time($uid)
+	{
+		$user_array = array(
             'login_ip' => $this->CI->input->ip_address(),
             'login_time' => time(),
         );
 		$this->CI->load->model('user','',true);
         return $this->CI->user->update($user_array, array('id' => $uid));
-    }
-
-    public function unsetUserCookie(){
-        $domain = config_item('cookie_domain');
-        $this->CI->input->set_cookie('uid', '', '', $domain);
-        $this->CI->input->set_cookie('token', '', '', $domain);
-        $this->CI->input->set_cookie('lastuname', '', '', $domain);#最后登录用户名
-    }
-
-    public function setUserCookie($user_data,$autologin=false){
-
-        $domain = config_item('cookie_domain');
-
-        if( $autologin ){
-            $this->CI->input->set_cookie('token', $this->getLoginToken($user_data['id'],$user_data['password']), 3600*12, $domain);
-        }
-        $this->CI->input->set_cookie('uid', $user_data['id'], 3600*24*7, $domain);
-        $this->CI->input->set_cookie('lastuname', $user_data['username'], 3600*24*7, $domain);#最后登录用户名
-    }
-
-    public function unsetUserSession(){
-
-        $user_data = array(
-            'id' => '',
-            'email' => '',
-            'mobile' => '',
-            'username' => ''
-        );
-        return $this->CI->session->unset_userdata($user_data);
-    }
-
-    public function setUserSession($user_data) {
-
-        if(!is_array($user_data))
-            return false;
-
-        $user_data['login_error_times'] = 0;
-
-        // 处理：日志，活跃用户。
-        $this->load->helpers('date');
-        $tmpTimeEnd = human_to_unix(mdate('%Y-%m-%d', time()).' 0:0:0');
-        $tmpTimeStart = $tmpTimeEnd - 24*3600;
-
-        if ( $user_data['create_time'] >= $tmpTimeStart AND $user_data['create_time'] <= $tmpTimeEnd ){
-            $user_data['regtime'] = $user_data['create_time'];
-        }
-
-        return $this->CI->session->set_userdata($user_data);
-    }
-
-	public function get_user($id,$session=true) {
-        if($session && $this->CI->session->userdata('id'))
-            return $this->CI->session->all_userdata();
-
-        $this->CI->load->model('user','',true);
-        return $this->CI->user->get($id);
 	}
 
-	public function login_out() {
-        $this->unsetUserCookie();
-        $this->unsetUserSession();
-        return true;
+	public function user_exit()
+	{
+		clear_user_login(true);	
 	}
-
-    public function sendResetPassMail(){
-        $time = time();
-        $username = $this->CI->session->userdata('_username');
-        if(empty($username))
-            return false;
-        $sign = md5($username . $time . config-item('sign_key'));
-
-        $url = site_url('auth/resetpass?username='.$username.'&time='.$time.'&sign='.$sign);
-
-
-        $title = 'XY游戏 —— 邮箱找回密码';
-        $content = '
-            <b>亲爱的XY游戏用户：</b><br />
-            &nbsp;&nbsp;&nbsp;&nbsp;您好！<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;感谢您使用XY游戏平台密码找回功能，请点击以下链接重新设置密码：<br /><br />
-            &nbsp;&nbsp;&nbsp;&nbsp;'.$url.'<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<font color=gray>(如果您无法点击此链接，请将它复制到浏览器地址栏后访问)</font><br /><br />
-            &nbsp;&nbsp;&nbsp;&nbsp;为了保证您帐号的安全，该链接有效期为24小时<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;如非本人操作，可能是有用户误输入您的邮箱地址，您可以忽略此邮件，由此给您带来的不便敬请谅解！<br />
-            <br />
-            XY游戏平台<br />
-            '.mdate('%Y年%m月%d日').'<br />
-            ';
-
-
-        $this->CI->load->helper('uk');
-        sendEmail($this->session->userdata('email'), $title, $content);
-        return true;
-    }
+	
+	//验证用户是否在黑名单里面
+	public function check_user()
+	{
+		
+	}
 }
 

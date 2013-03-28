@@ -26,7 +26,7 @@ class Wangpan{
 		$files	= $type === SERVICE_NUMBER::JSFILE ? $this->get('js') : $this->get('css');	
 		$include = array_fill_keys($include , $default_version);
 		$files = array_intersect_key($files, $include);
-		return $this->static_file_html($files);	
+		return $this->static_file_html($files , $type);	
 	}
 	
 	function static_file_html( $files= array() , $type = SERVICE_NUMBER::JSFILE)
@@ -95,6 +95,16 @@ class Wangpan{
 		return $menu;
 	}
 
-
+	//md5	
+	public function get_md5_key($site_id)
+	{
+		$md5_key = $this->get('md5_key');
+		if (isset($md5_key[$site_id]))
+		{
+			return $md5_key[$site_id];
+		}	
+		return false;
+	}
+	
 }	
 

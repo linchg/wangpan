@@ -19,20 +19,24 @@ class MY_Controller extends CI_Controller {
         $this->sub_menu =   $this->uri->segment(2);
     }   
 
+	//登录验证
     public function loginVerify() {
-        $siteUrl = $this->passPortUrl();
         if($this->login->is_login() !== true) {
-            redirect($siteUrl.'auth/login?redurl='.urlencode(current_url().$this->buildRequest(true)), 'refresh');
-        }   
+			if($this->utility->is_ajax_request()) { 
+				$this->errorOutput(20123);	
+            }	
+			if(current_url() != site_url()) {
+				redirect('/auth/login?redurl='.urlencode(current_url().$this->buildRequest(true)), 'refresh');
+			}
+			redirect('/auth/login', 'refresh');
+        }
+		$this->login->check_user(); 
     }   
 
-    public function passPortUrl(){
-        return config_item('base_url');
-    }
        
-    public function getUser($uid)
+    public function getUser()
     {   
-        return $this->login->get_user($uid);    
+        return $this->login->get_login_user();    
     }
 
     protected function globalLayout($data = array() , $header = 'header.php' , $footer = 'footer.php')

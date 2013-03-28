@@ -7,10 +7,12 @@ $config['js'] = array(
 	'static/js/jquery.min.js' => '201304' , 
 	'static/js/index.js' => '201305',
 	'static/js/register.js' => '201305',
+	'static/js/mail.tip.js' => '201305',
 );
 
 //css
 $config['css'] = array(
-	'static/css/comm.css' => '201303'
+	'static/css/comm.css' => '201303',
+	'static/css/index.css' => '201303'
 );
 

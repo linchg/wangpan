@@ -1,3 +1,11 @@
+
+
+
+$(function(){
+	textSingleUtil.regTag = true;
+	textSingleUtil._init({popDomId:'initEmails',popInnerDomId:'emailList',effectId:'email',overClass:'ys',outClass:'xs',domHeight:30});
+});
+
 function getCookie(c_name) {
     if (document.cookie.length > 0) {
         c_start = document.cookie.indexOf(c_name + "=");

@@ -6,10 +6,10 @@
 <meta name="keywords" content="<?php echo $this->key?>" />
 <meta name="description" content="<?php echo $this->content?>" />
 <link href="<?php echo static_url_version('static/css/comm.css');?>" rel="stylesheet" type="text/css" />
+<?php echo isset($css_header) ? $css_header : '';?>
 <script type="text/javascript" src="<?php echo static_url_version('static/js/jquery.min.js');?>"></script>
 <?php
 echo isset($js_header) ? $js_header : '';
-echo isset($css_header) ? $css_header : '';
 ?>
 </head>
 
@@ -19,8 +19,8 @@ echo isset($css_header) ? $css_header : '';
 <div class="top_width">
 <div class="logo"><a href="/" title="一木禾网盘"><img src="<?php echo static_url('static/images/logo_black.jpg')?>"></a></div>
 <div class="subtop1">
-<div id="hot"><img src="n_images/hot1.gif"></div>
-<div id="new"><img src="n_images/new1.gif"></div>
+<div id="hot"><img src="<?php echo static_url('static/images/hot1.gif');?>"></div>
+<div id="new"><img src="<?php echo static_url('static/images/new1.gif');?>"></div>
 <?php
 $menu = isset($content_menus) ? $content_menus : array();
 foreach ($menu as $url => $v)

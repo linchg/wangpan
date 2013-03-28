@@ -18,4 +18,35 @@ class Index extends MY_Controller {
 		$this->template->set_chunk('content' , 'reg' , array());
 		$this->template->load('index');			
 	}
+
+	//用户协议
+	public function argreement()
+	{
+		echo '用户协议';	
+	}
+
+	//网盘搛钱
+	public function money()
+	{
+		echo '网盘搛钱';	
+	}
+
+	//积分
+	public function shop()
+	{
+		echo '网盘搛钱';	
+	}
+
+	//faq
+	public function faq()
+	{
+		echo '网盘搛钱';	
+	}
+
+	//about
+	public function about()
+	{
+		echo '网盘搛钱';	
+	}
 }
+
