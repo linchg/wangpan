@@ -30,7 +30,7 @@ class CI_Log {
 	protected $_threshold	= 1;
 	protected $_date_fmt	= 'Y-m-d H:i:s';
 	protected $_enabled	= TRUE;
-	protected $_levels	= array('ERROR' => '1', 'DEBUG' => '2',  'INFO' => '3', 'ALL' => '4');
+	protected $_levels	= array('ERROR' => '1', 'TRACE' => 2 ,  'DEBUG' => '3',  'INFO' => '4', 'ALL' => '5');
 
 	/**
 	 * Constructor
@@ -40,7 +40,6 @@ class CI_Log {
 		$config =& get_config();
 
 		$this->_log_path = ($config['log_path'] != '') ? $config['log_path'] : APPPATH.'logs/';
-
 		if ( ! is_dir($this->_log_path) OR ! is_really_writable($this->_log_path))
 		{
 			$this->_enabled = FALSE;
@@ -107,6 +106,53 @@ class CI_Log {
 		return TRUE;
 	}
 
+	/** 
+     * Write Scribe Log File
+     *
+     * Generally this function will be called using the global log_scribe() function
+     *
+     * @param   string  the error level
+     * @param   string  the error category
+     * @param   string  the error message
+     * @return  bool
+     */
+    public function scribe_log($level = 'error', $category, $msg)
+    {   
+        /*if(!function_exists('scribe_sink'))
+        {   
+            return self::write_log($level, $msg);
+        }*/   
+    
+		if ($this->_enabled === FALSE)
+		{
+			return FALSE;
+		}
+
+		$level = strtoupper($level);
+		if ( ! isset($this->_levels[$level]) OR ($this->_levels[$level] > $this->_threshold))
+		{
+			return FALSE;
+		}
+		$category = strtolower($category);
+		$filepath = $this->_log_path.$category.'-log-'.date('Y-m-d').'.php';
+		$message  = '';
+		if ( ! file_exists($filepath))
+		{
+			$message .= "<"."?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?".">\n\n";
+		}
+		if ( ! $fp = @fopen($filepath, FOPEN_WRITE_CREATE))
+		{
+			return FALSE;
+		}
+		$message .= $level.' '.(($level == 'INFO') ? ' -' : '-').' '.date($this->_date_fmt). ' --> '.$msg."\n";
+		flock($fp, LOCK_EX);
+		fwrite($fp, $message);
+		flock($fp, LOCK_UN);
+		fclose($fp);
+		@chmod($filepath, FILE_WRITE_MODE);
+		return TRUE;
+    }   
+	
 }
 // END Log Class
 

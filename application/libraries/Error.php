@@ -35,6 +35,14 @@ class Error {
 		exit;
 	}
 
+ 	//返回上次错误
+    function error() {
+        if(empty($this->_error_code)) {
+            return true;
+        }
+        return false;
+    }
+
 	//获取错误码对应的错误信息
 	function error_msg($error_code = null) {
 		$argv = func_get_args();

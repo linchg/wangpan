@@ -354,10 +354,26 @@ if ( ! function_exists('log_message'))
 		{
 			return;
 		}
-
 		$_log =& load_class('Log');
 		$_log->write_log($level, $message, $php_error);
 	}
+}
+
+
+if (! function_exists('log_scribe'))
+{
+	function log_scribe($level = 'error', $category, $message)
+    {   
+        static $_log;
+
+        if (config_item('log_threshold') == 0)
+        {   
+            return;
+        }   
+
+        $_log =& load_class('Log');
+        $_log->scribe_log($level, $category, $message);
+    }   	
 }
 
 // ------------------------------------------------------------------------

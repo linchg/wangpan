@@ -50,14 +50,14 @@ class Login
 	public function get_sig($loginname , $pwd)
 	{
 		$fields = array('username' => $loginname , 'password' => $pwd); 
-		$sig_token = $this->utility->get_md5_sig($fields);
+		$sig_token = $this->CI->utility->get_md5_sig($fields);
 		return $sig_token;	
 	}
 	
 	//获取当前在线用户
 	public function get_login_user()
 	{
-		return $this->session->userdata($this->_session_key);
+		return $this->CI->session->userdata($this->_session_key);
 	}
 
 	//验证登录用户
@@ -66,8 +66,8 @@ class Login
 		log_scribe('trace', 'login', $this->CI->input->ip_address().' ['.current_url().'] LOGIN '.$loginname.', '.$this->CI->utility->mosaic($password).', '.$this->CI->input->ip_address().', '.$site_id);	
        $pwd = $this->CI->utility->get_pwd_md5($pwd);//验证密码
 		if ($pwd == false) return false;
-		$this->CI->load->model('user','',true);
-		$row = $this->CI->user->get($loginname , 'username');  			
+		$this->CI->load->library('UserCache');
+		$row = $this->CI->userCache->get_user($loginname , 'username'); 
 		if (empty($row)) {
 			$this->CI->error->set_error(20121);
 			return false;
@@ -121,7 +121,8 @@ class Login
 		$this->CI->load->model('user','',true);
         return $this->CI->user->update($user_array, array('id' => $uid));
 	}
-
+	
+	//用户退出
 	public function user_exit()
 	{
 		clear_user_login(true);	

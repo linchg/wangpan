@@ -28,6 +28,7 @@ class Index extends MY_Controller {
 	//网盘搛钱
 	public function money()
 	{
+		log_scribe('trace', 'login', $this->input->ip_address().' ['.current_url().'] LOGIN ');	
 		echo '网盘搛钱';	
 	}
 

@@ -85,7 +85,7 @@ class MY_Controller extends CI_Controller {
 	public function userExit()
 	{
 		if($this->login->is_login() === true) {
-			$this->login->login_out();
+			$this->login->user_exit();
 		}
 		$redurl = $this->input->get('redurl', true);
 		if($redurl != '') {
