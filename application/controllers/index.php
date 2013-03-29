@@ -6,17 +6,15 @@ class Index extends MY_Controller {
 	}
 	public function index()
 	{
-		$this->template->set_chunk('content' , 'indexContent' , array());  
 		$this->template->set_static(array('static/js/index.js'));  
 		$this->template->set_menu();  
-		$this->template->load('index');
+		$this->template->load_view('default' , 'index');
 	}
 
 	public function reg()
 	{
 		$this->title = '兴趣盘－注册用户';
-		$this->template->set_chunk('content' , 'reg' , array());
-		$this->template->load('index');			
+		$this->template->load('default' , 'reg');			
 	}
 
 	//用户协议

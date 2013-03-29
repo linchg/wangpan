@@ -108,11 +108,10 @@ class Auth extends MY_Controller {
         }
 		*/
 		$this->title = '兴趣盘－注册用户';
-		$this->template->set_chunk('content' , 'reg' , array());
 		$this->template->set_static(array('static/js/register.js' , 'static/js/mail.tip.js'));
 		$this->template->set_static(array('static/css/index.css') , SERVICE_NUMBER::CSSFILE , SERVICE_NUMBER::FILEHEADER);
 		$this->template->set_menu();
-		$this->template->load('index');			
+		$this->template->load_view('default' , 'register');			
     }
 
     public function ajax_register() {
