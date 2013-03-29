@@ -12,12 +12,8 @@ class Auth extends MY_Controller {
 
     public function login()
     {
-        $this->form_validation->set_error_delimiters('<span class="login-errorinfo">','</span>');
-
         if($this->login->is_login()) 
             redirect('user/'); 
-
-        $this->login->setLoginBackUrl();
 
         if ($this->input->is_post()){
 
@@ -25,35 +21,31 @@ class Auth extends MY_Controller {
             $tmpLoginErrorTimes = intval($this->session->userdata('login_error_times'));
 
             if ($tmpLoginErrorTimes >= 3){
-                $tmpRe = $this->login->checkCaptcha($this->input->post('captcha'));
+                $tmpRe = $this->login->check_captcha($this->input->post('captcha'));
                 if ($tmpRe === FALSE){
-                    $this->form_validation->error('captcha','','','验证码 错误');
+                    $this->error->set_error('20101');
+                    redirect('auth/login');
                 }
             }
-            $this->form_validation->set_rules('username', '帐号', 'trim|required|min_length[4]|max_length[20]|alpha_numeric|callback_check_user_exist');
-            $this->form_validation->set_rules('password', '密码', 'trim|required|min_length[6]|max_length[20]|callback_check_password');
+            $this->form_validation->set_rules('username', '帐号', 'trim|required|min_length[4]|max_length[20]|alpha_numeric');
+            $this->form_validation->set_rules('password', '密码', 'trim|required|min_length[6]|max_length[20]');
             $tmpRe = $this->form_validation->run();
 
             if ($tmpRe === TRUE){
-                $this->login->updateUserLogin($this->user_data['id']);
-                $this->login->setUserSession($this->user_data);
-                $this->login->setUserCookie($this->user_data,$this->input->post('autologin') == 'yes');
-                // Go backurl
-                redirect($this->login->getLoginBackUrl());
+                if($this->login->validate($this->input->post('username',true),$this->input->post('password',true)))
+                    redirect($this->login->getLoginBackUrl());
 
-            }else{
-                $this->session->set_userdata('login_error_times', intval($this->session->userdata('login_error_times'))+1);
             }
+            $this->session->set_userdata('login_error_times', intval($this->session->userdata('login_error_times'))+1);
         }
 
-        $tmpLoginErrorTimes = intval($this->session->userdata('login_error_times'));
         $this->display('user/login', array('LoginErrorTimes'=>$tmpLoginErrorTimes));
     }
     
     public function ajax_login() {
 
-        $username = htmlspecialchars(trim($this->input->get("username")));
-        $password = htmlspecialchars(trim($this->input->get('password')));
+        $username = trim($this->input->get("username"),true);
+        $password = trim($this->input->get('password'),true);
 
         $user = $this->login->checkLogin($username, $password);
         if ($user) {

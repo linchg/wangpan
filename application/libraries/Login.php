@@ -66,7 +66,7 @@ class Login
 		log_scribe('trace', 'login', $this->CI->input->ip_address().' ['.current_url().'] LOGIN '.$loginname.', '.$this->CI->utility->mosaic($password).', '.$this->CI->input->ip_address().', '.$site_id);	
        $pwd = $this->CI->utility->get_pwd_md5($pwd);//验证密码
 		if ($pwd == false) return false;
-		$this->CI->load->library('UserCache');
+		$this->CI->load->library('cache/UserCache');
 		$row = $this->CI->userCache->get_user($loginname , 'username'); 
 		if (empty($row)) {
 			$this->CI->error->set_error(20121);
@@ -133,5 +133,12 @@ class Login
 	{
 		
 	}
+
+    public function check_captcha($captcha){
+        $ret =  $this->session->userdata('login_captcha') === $captcha;
+        if($ret)
+            $this->session->unset_userdata('login_captcha');
+        return $ret;
+    }
 }
 
