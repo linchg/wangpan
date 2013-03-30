@@ -1,8 +1,73 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title><?php echo $this->title;?></title>
+<link href="<?php echo static_url('static/css/global.css');?>" rel="stylesheet" type="text/css">
+<link href="<?php echo static_url('static/css/files.css')?>" rel="stylesheet" type="text/css">
+<!--[if lt ie 9]>
+<script language="javascript" type="text/javascript" src="<?php echo static_url('static/js/html5.js');?>"></script>
+<![endif]-->
+<script type="text/javascript" src="<?php echo static_url('static/js/jquery.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo static_url('static/js/jquery.blockUI.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo static_url('static/js/jquery.cookie.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo static_url('static/js/common.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo static_url('static/js/ZeroClipboard.js'); ?>"></script>
+<script language="javascript">
+	var clip = null;
+	function copy(key,copyshorturl,type) {
+		clip = new zeroclipboard.client();
+		clip.addeventlistener( "load", function(client) {
+			client.movie.title="复制链接";
+		});
+
+		clip.addeventlistener( "complete", function(){
+			floatdiv("网址复制成功。","#");
+			settimeout("closeform()",2000);
+		});
+		if(type==1)
+			var con=$("#"+copyshorturl).val()
+		else
+			var con=$("#"+copyshorturl).html()
+		clip.settext(con);
+		clip.glue(key);
+	}
+</script>
+</head>
+
+<body>
+<div class="clearfix">
+<aside class="aside">
+<a href="/" title="回一木禾首页" class="db"><h1 class="logo ti">一木禾网盘</h1></a>
+<div id="userinfobox" class="plr20  mb20">
+    <p id="username"><a href="http://linchg.yimuhe.com/" target="_blank" title="http://linchg.yimuhe.com/"><span class="white">linchg</span></a></p>
+    <div class="total-space mb5" id="total-space">
+      <p id="userspace" class="userusednum">178.81kb 共2文件</p>
+      <div class="used-space" style="width:1px;" id="used-space"></div>
+    </div>
+    <p class="user-fun"><a id="userinfo" class="hoverlink" title="管理账号信息" href="userinfo.php">账号信息</a><span class="plr5">|</span><a id="spaceinfo" class="hoverlink" title="未读信息" href="msg.php">未读信息(0)</a></p>
+    <p class="user-fun">余额：<a href="tiqu.php"><b class="white">0.0000</b></a>元　积分：<a href="jifenlog.php"><b class="white" id="jifen">2</b></a></p>
+</div>
+<?php include_once("left_menu.php");?>
+</aside>
+
 <section class="mainer">
 <!--右边区域  a-->
 <div class="plr20 pt5">
 <header class="menubox rel h60 mb20">
-<?php include_once('header.php');?>
+<div class="abs abs-r-10 " style="_margin-right:235px;">
+<a id="mrqd" href="javascript:;" class="checkin imitate-ico imitate-checkin dib hoverlink">每日签到</a>
+<span class="plr5 gray">|</span>
+<a href="http://linchg.yimuhe.com/" target="_blank" title="http://linchg.yimuhe.com/" class="hoverlink">我的主页</a>
+<span class="plr5 gray">|</span>
+<a href="userweb.php" target="_parent" title="空间公告设置" class="hoverlink">空间公告</a>
+<span class="plr5 gray">|</span>
+<a href="wdxx.php" target="_parent" title="我的下线" class="hoverlink blue">我的下线</a>
+<span class="plr5 gray">|</span>
+<a href="http://wpa.qq.com/msgrd?v=1&uin=45995086&site=www.yimuhe.com&menu=no" target="_blank" class="gray feedbacklink hoverlink">建议反馈</a>
+<span class="plr5 gray">|</span>
+<a href="/n_loginout.php" target="_parent" title="退出一木禾网盘" class="hoverlink">退出</a>
+</div><!--up-->
 <div class="clearfix pt30">
 <div class="l">
 <!-- 新建文件夹菜单 -->
@@ -160,3 +225,14 @@
 
 </div>
 </section>
+
+<script language="javascript">
+var folder='<select id="folderid" size="1"><option value="0">根目录</option><option value="1">视频</option><option value="3">&nbsp;&nbsp;└&nbsp;www</option><option value="4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└&nbsp;aaa</option><option value="2">音频</option><option value="5">bbbccc</option></select>';
+function get_folder(mvdir){
+	yid_file(mvdir,folder);
+}
+</script>
+<br /><br />
+<div style="display:none"><script src="http://s5.cnzz.com/stat.php?id=4551662&web_id=4551662" language="javascript"></script></div>
+</body>
+</html>
