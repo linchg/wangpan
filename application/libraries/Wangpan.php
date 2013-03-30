@@ -73,12 +73,16 @@ class Wangpan{
 				$menuClass = 'default_class';
 				break;
 			case SERVICE_NUMBER::USER_MENU:
-				$menuName = 'default_menu';	
-				$menuClass = 'default_class';
+				$menuName = 'user_menu';	
+				$menuClass = 'user_class';
+				break;
+			case SERVICE_NUMBER::USER_TOP_MENU:
+				$menuName = 'user_top_menu';	
+				$menuClass = 'user_top_class';
 				break;
 			case SERVICE_NUMBER::ADMIN_MENU:
-				$menuName = 'default_menu';	
-				$menuClass = 'default_class';
+				$menuName = 'admin_menu';	
+				$menuClass = 'admin_class';
 				break;
 			default:
 				$menuName = 'default_menu';	
@@ -87,10 +91,18 @@ class Wangpan{
 		}
 		$menu = $this->get($menuName);
 		$class = $this->get($menuClass);
+		if (empty($class)) return $menu;
 		$tmp = array();
 		if (isset($menu[$select]))
 		{
-			$menu[$select]['style'] = $class;
+			if (!empty($menu[$select]['style']))
+			{
+				$menu[$select]['active_style'] = $class;
+			}
+			else
+			{
+				$menu[$select]['style'] = $class;
+			}
 		}
 		return $menu;
 	}

@@ -13,5 +13,6 @@ class SERVICE_NUMBER
 
 	const DEFAULT_MENU=1;//网站默认菜单
 	const USER_MENU=2;//用户登录菜单
-	const ADMIN_MENU = 3;//管理后台菜单
+	const USER_TOP_MENU=3;//用户登录顶部菜单
+	const ADMIN_MENU = 4;//管理后台菜单
 }

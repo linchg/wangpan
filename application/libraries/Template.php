@@ -29,7 +29,7 @@ class Template {
 		}
 
 		function load_view($template = '', $view = '' , $view_data = array(), $return = FALSE) {
-			$this->set('content', $this->CI->load->view($view, $view_data, TRUE));
+			$this->set('content', $this->CI->load->view($view, array_merge($this->template_data , $view_data), TRUE));
 			return $this->CI->load->view($template, $this->template_data, $return);
 		}
 		
@@ -43,11 +43,12 @@ class Template {
 			}
 		}  
 
-		function set_menu($type = SERVICE_NUMBER::DEFAULT_MENU)
+		function set_menu($type = SERVICE_NUMBER::DEFAULT_MENU , $name = 'content_menus')
 		{
 			$router = $this->CI->uri->uri_string();
 			if (empty($router)) $router = 'index';
 			$menu = $this->CI->wangpan->menu($type , $router);
-			$this->set('content_menus' , $menu);	
+			if (empty($name)) return false;
+			$this->set($name , $menu);	
 		}
 }	

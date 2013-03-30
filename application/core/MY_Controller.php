@@ -5,6 +5,7 @@ class MY_Controller extends CI_Controller {
     public $title= '欢迎进入兴趣盘';
 	public $content = '兴趣盘';
 	public $key= '兴趣,网盘';
+	public $siteName= '兴趣网盘';
     public $menu= ''; 
     public $sub_menu= ''; 
             

@@ -6,16 +6,15 @@ class User extends MY_Controller {
 
     function __construct()
     {
-        parent::__construct(true);
+        parent::__construct(false);
         $this->load->library('form_validation');
     }
 
     public function index()
     {
-        $this->load->helper('date');
-
-        $user_data = $this->getUser($this->session->userdata('id'));
-        $this->display('user/index');
+		$this->template->set_menu(SERVICE_NUMBER::USER_MENU);
+		$this->template->set_menu(SERVICE_NUMBER::USER_TOP_MENU , 'top_menus');
+        $this->template->load_view('user/default' , 'user/index');
     }
     
     public function setpass()
