@@ -25,12 +25,14 @@ DROP TABLE IF EXISTS `blackuser`;
 CREATE TABLE `blackuser` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID 自增',
   `uid` int(11) NOT NULL COMMENT '用户ID',
+  `username` varchar(80) NOT NULL COMMENT '用户名',
   `admin_id` int(11) NOT NULL COMMENT '管理用户ID',
   `add_time` int(11) NOT NULL COMMENT '创建时间',
   `add_ip` varchar(20) NOT NULL COMMENT '创建IP',
   `reason` varchar(180) NOT NULL COMMENT '原因',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uid` (`uid`)
+  UNIQUE KEY `uid` (`uid`),
+  UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='黑名单';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -316,12 +318,14 @@ DROP TABLE IF EXISTS `whiteuser`;
 CREATE TABLE `whiteuser` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID 自增',
   `uid` int(11) NOT NULL COMMENT '用户ID',
+  `username` varchar(80) NOT NULL COMMENT '用户名',
   `admin_id` int(11) NOT NULL COMMENT '管理用户ID',
   `add_time` int(11) NOT NULL COMMENT '创建时间',
   `add_ip` varchar(20) NOT NULL COMMENT '创建IP',
   `reason` varchar(180) NOT NULL COMMENT '原因',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uid` (`uid`)
+  UNIQUE KEY `uid` (`uid`),
+  UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='白名单';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
