@@ -135,10 +135,39 @@ class Login
 	}
 
     public function check_captcha($captcha){
-        $ret =  $this->session->userdata('login_captcha') === $captcha;
-        if($ret)
-            $this->session->unset_userdata('login_captcha');
-        return $ret;
+        if(empty($captcha))
+            return false;
+        $this->CI->load->library('Kcaptcha');
+        return $this->CI->kcaptcha->verify(array('captcha'=>$captcha)); 
+    }
+
+    public function check_user_exist($userename){
+        return false;
+    }
+
+    public function check_email_exist($email){
+        return false;
+    }
+
+    //网盘名称
+    public function check_petname_exist($email){
+        return false;
+    }
+
+    //登录出现错误后，退回url
+    public function before_login(){
+        if (isset($_SERVER['HTTP_REFERER'])){
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+        redirect(site_url('/'));
+    }
+
+    //登录正确后，进入url
+    public function after_login(){
+        $login_path = $this->CI->input->post('login_path');
+        if(!empty($login_path))
+            redirect(site_url($login_path));
+        redirect(site_url('user'));
     }
 }
 

@@ -10,7 +10,7 @@
 
             <div class="title_child" style="margin-left:20px;">用户注册</div>
             <div id="reg"> 
-                <form id="regform">
+                <form id="regform" action="<?php echo site_url('auth/do_register');?>" method="post">
                     <table width="100%" align="center" cellpadding="4" cellspacing="0">
                         <tr>
                             <td width="302" align="right">登陆帐号：</td>
@@ -146,7 +146,7 @@
                             </div></td>
                         </tr>
                         <tr>
-                            <td align="right" ><input name="servItems" type="checkbox" id="servItems" style="border:0px;" checked /></td>
+                            <td align="right" ><input name="servitems" type="checkbox" id="servitems" style="border:0px;" checked /></td>
                             <td>
                                 我已阅读并完全同意 <b><a href="/index/argreement" target=_blank>注册协议</a></b>
                             </td>

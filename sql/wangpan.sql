@@ -225,7 +225,8 @@ CREATE TABLE `user` (
   `username` varchar(80) NOT NULL COMMENT '用户名',
   `password` varchar(32) NOT NULL COMMENT '密码',
   `email` varchar(80) DEFAULT '' COMMENT '电子邮件',
-  `nick_name` varchar(80) DEFAULT '' COMMENT '昵称',
+  `nickname` varchar(80) DEFAULT '' COMMENT '昵称',
+  `petname` varchar(80) DEFAULT '' COMMENT '网盘名称',
   `down_counts` int(12) DEFAULT 0 COMMENT '下载量',
   `total_money` float DEFAULT 0.0 COMMENT '获得总拥金',
   `space_name` varchar(80) NOT NULL COMMENT '空间名称',
@@ -238,7 +239,8 @@ CREATE TABLE `user` (
   `add_ip` varchar(20) NOT NULL COMMENT '创建IP',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
-  KEY `email` (`email`)
+  UNIQUE KEY `petname` (`petname`),
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 

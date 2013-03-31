@@ -1,8 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
 class Auth extends MY_Controller {
-
-    private $user_data;
 
     function __construct()
     {
@@ -10,36 +7,35 @@ class Auth extends MY_Controller {
         $this->load->library('form_validation');
     }
 
+    /*
+     * 处理登录,get_post请求
+     * username,password
+     * captcha 3次以上出的水印输入
+     * login_path 可选 标识登陆后返回地址
+    */
     public function login()
     {
         if($this->login->is_login()) 
             redirect('user/'); 
 
-        if ($this->input->is_post()){
-
-            $this->load->model('user');
-            $tmpLoginErrorTimes = intval($this->session->userdata('login_error_times'));
-
-            if ($tmpLoginErrorTimes >= 3){
-                $tmpRe = $this->login->check_captcha($this->input->post('captcha'));
-                if ($tmpRe === FALSE){
-                    $this->error->set_error('20101');
-                    redirect('auth/login');
-                }
+        $errors = intval($this->session->userdata('login_error_times'));
+        if ($errors >= 3){
+            if(!$this->login->check_captcha($this->input->get_post('captcha'))){
+                $this->error->set_error('20101');
+                $this->login->before_login();
             }
-            $this->form_validation->set_rules('username', '帐号', 'trim|required|min_length[4]|max_length[20]|alpha_numeric');
-            $this->form_validation->set_rules('password', '密码', 'trim|required|min_length[6]|max_length[20]');
-            $tmpRe = $this->form_validation->run();
-
-            if ($tmpRe === TRUE){
-                if($this->login->validate($this->input->post('username',true),$this->input->post('password',true)))
-                    redirect($this->login->getLoginBackUrl());
-
-            }
-            $this->session->set_userdata('login_error_times', intval($this->session->userdata('login_error_times'))+1);
         }
 
-        $this->display('user/login', array('LoginErrorTimes'=>$tmpLoginErrorTimes));
+        $this->form_validation->set_rules('username', '帐号', 'trim|required|min_length[4]|max_length[20]|alpha_numeric');
+        $this->form_validation->set_rules('password', '密码', 'trim|required|min_length[6]|max_length[20]');
+        if ($this->form_validation->run()){
+
+            if($this->login->validate($this->input->get_post('username',true),$this->input->get_post('password',true)))
+                $this->login->after_login();
+        }
+        //登录错误
+        $this->session->set_userdata('login_error_times', intval($this->session->userdata('login_error_times'))+1);
+        $this->login->before_login();
     }
     
     public function ajax_login() {
@@ -63,47 +59,49 @@ class Auth extends MY_Controller {
     {
         $this->userExit();
     }
-    
+
     public function register()
     {
-        //$this->form_validation->set_error_delimiters('<div for="%s" class="ui-reg-info ui-reg-info-error"><span><em>','</em></span></div>');
-        //if($this->login->is_login()) 
-         //   redirect('user/'); 
-        
-        /*if ($this->input->is_post()){
-            $this->load->model('user');
+        $this->title = '兴趣盘－注册用户';
+        $this->template->set_static(array('static/js/register.js' , 'static/js/mail.tip.js'));
+        $this->template->set_static(array('static/css/index.css') , SERVICE_NUMBER::CSSFILE , SERVICE_NUMBER::FILEHEADER);
+        $this->template->set_menu();
+        $this->template->load_view('default' , 'register');			
+    }
+    
+    public function do_register()
+    {
+        if($this->login->is_login()) 
+            redirect('user/'); 
+        $ret = $this->input->get_post('servitems');
+        var_dump($ret);
+        exit;
 
-            $this->form_validation->set_rules('pact', '通行证协议', 'trim|callback_check_pact');
-            $this->form_validation->set_rules('username', '帐号', 'trim|required|min_length[4]|max_length[20]|alpha_numeric|callback_check_user_register');
-            $this->form_validation->set_rules('password', '密码', 'trim|required|min_length[6]|max_length[20]');
-            $this->form_validation->set_rules('passconf', '确认密码', 'required|matches[password]');
+        $this->form_validation->set_rules('username', '帐号', 'trim|required|min_length[5]|max_length[20]|alpha_numeric');
+        $this->form_validation->set_rules('petname', '网盘名称', 'trim|required|min_length[5]|max_length[20]|alpha_numeric');
+        $this->form_validation->set_rules('password', '密码', 'trim|required|min_length[5]|max_length[20]');
+        $this->form_validation->set_rules('passwordconfirm', '确认密码', 'required|matches[password]');
+        $this->form_validation->set_rules('email', '电子邮件', 'trim|required|valid_email');
 
-            if ($this->form_validation->run() === TRUE){
-                // for table: user
-                $user_array = array(
-                    'username' => $this->input->post('username'),
-                    'password' => $this->login->getPassword($this->input->post('password')),
-                    'create_time' => time(),
-                    'create_ip' => $this->input->ip_address(),
-                    'login_time' => time(),
-                    'login_ip' => $this->input->ip_address(),
-                    'email' => '',
-                    'mobile' => ''
-                );
-                $userid = $this->user->create($user_array);
-                $user_array['id'] = $userid;
-                $this->login->setUserSession($user_array);
-                $this->login->setUserCookie($user_array,false);
-                redirect($this->login->getLoginBackUrl());
-
-            }
+        if ($this->form_validation->run() === TRUE){
+            // for table: user
+            $user_array = array(
+                'username' => $this->input->get_post('username',true),
+                'password' => $this->utility->get_pwd_md5($this->input->get_post('password',true)),
+                'petname' => $this->input->get_post('petname',true),
+                'email' => $this->input->get_post('email',true),
+                'nickname' => $this->input->get_post('nickname',true),
+                'create_time' => time(),
+                'create_ip' => $this->input->ip_address(),
+                'login_time' => time(),
+                'login_ip' => $this->input->ip_address(),
+            );
+            $userid = $this->user->create($user_array);
+            $user_array['id'] = $userid;
+            $this->login->setUserSession($user_array);
+            $this->login->setUserCookie($user_array,false);
+            redirect($this->login->getLoginBackUrl());
         }
-		*/
-		$this->title = '兴趣盘－注册用户';
-		$this->template->set_static(array('static/js/register.js' , 'static/js/mail.tip.js'));
-		$this->template->set_static(array('static/css/index.css') , SERVICE_NUMBER::CSSFILE , SERVICE_NUMBER::FILEHEADER);
-		$this->template->set_menu();
-		$this->template->load_view('default' , 'register');			
     }
 
     public function ajax_register() {
@@ -259,17 +257,6 @@ class Auth extends MY_Controller {
         $this->display('auth/forgetpass', $resp);
     }
 
-    // callback
-    public function check_user_exist($username){
-        $user_data = $this->login->checkUserExist($username);
-        if (!$user_data){
-            $this->form_validation->set_message('check_user_exist', '%s 不存在.');
-            return false;
-        }
-        $this->user_data = $user_data;
-        return true;
-    }
-
     //callback
     public function check_password($password){
         $uid = $this->session->userdata('id');
@@ -284,24 +271,6 @@ class Auth extends MY_Controller {
         return true;
     }
 
-    //callback
-    public function check_user_register($username){
-        if ($this->login->checkUserExist($username)){
-            $this->form_validation->set_message('check_user_register', '%s 已经存在.');
-            return false;
-        }
-        return true;
-    }
-
-    //callback
-    public function check_pact($str){
-        if ($str !== 'yes'){
-            $this->form_validation->set_message('check_pact', '%s 必须勾选.');
-            return false;
-        }
-        return true;
-    }
-    
     public function check_email_exist($str){
         if (!$this->_check_email_exist($str)){
             $this->form_validation->set_message('check_email_exist', '%s 不存在.');
@@ -331,42 +300,48 @@ class Auth extends MY_Controller {
     }
     
     /**
-     * ajax validate username
+     * ajax validate 
      */
-    public function check($type){
-        $this->load->model('user');
+    public function check(){
+        $type = $this->input->get_post('type',true);
         switch($type){
-            case 'username':
-                $username = strip_tags($this->input->get('username'));
-                if ($this->input->get('jsoncallback')){
-                    if($this->_check_user_exist(strtolower($username))){
-                        $this->_doJsonCallback(array('status' => 'error'));
-                    }else{
-                        $this->_doJsonCallback(array('status' => 'success'));
-                    }
-                    exit;
-                }else{
-                    if($this->_check_user_exist(strtolower($username))) die("false"); else die("true");
-                }
-            case 'email':
-                $email = strip_tags($this->input->get('email'));
-                if($this->_check_email_exist($email)) die("false"); else die("true");
-            case 'nemail':
-                $email = strip_tags($this->input->get('email'));
-                if($this->_check_email_exist($email)) die("true"); else die("false");
-            case 'cap':
-                $captcha = strip_tags($this->input->get('captcha'));
-                $capt = strtolower($this->session->userdata('captcha_word'));
-                if($captcha == $capt) die("true"); else die("false");
-            case 'nname':
-                $username = strip_tags($this->input->get('username'));
-                if($this->_check_user_exist(strtolower($username))) die("true"); else die("false");
-            case 'cpasswd':
-                $password = strip_tags($this->input->get('oldpass'));
-                if($this->check_password($password)) die("true"); else die("false");
-            case 'ccpasswd':
-                $password = strip_tags($this->input->get('oldpass'));
-                if($this->check_child_password($password)) die("true"); else die("false");
+        case 'username':
+            $username = $this->input->get_post('username',true);
+            if(!$this->login->check_user_exist($username))
+                $this->ajaxOutput(SERVICE_NUMBER::AJAX_SUCCESS);
+            else
+                $this->ajaxOutput(SERVICE_NUMBER::AJAX_ERROR);
+            break;
+        case 'petname':
+            $petname = $this->input->get_post('petname',true);
+            if(!$this->login->check_petname_exist($petname))
+                $this->ajaxOutput(SERVICE_NUMBER::AJAX_SUCCESS);
+            else
+                $this->ajaxOutput(SERVICE_NUMBER::AJAX_ERROR);
+            break;
+        case 'email':
+            $email = strip_tags($this->input->get_post('email'));
+            if(!$this->login->check_email_exist($email))
+                $this->ajaxOutput(SERVICE_NUMBER::AJAX_SUCCESS);
+            else
+                $this->ajaxOutput(SERVICE_NUMBER::AJAX_ERROR);
+            break;
+        case 'nemail':
+            $email = strip_tags($this->input->get('email'));
+            if($this->_check_email_exist($email)) die("true"); else die("false");
+        case 'cap':
+            $captcha = strip_tags($this->input->get('captcha'));
+            $capt = strtolower($this->session->userdata('captcha_word'));
+            if($captcha == $capt) die("true"); else die("false");
+        case 'nname':
+            $username = strip_tags($this->input->get('username'));
+            if($this->_check_user_exist(strtolower($username))) die("true"); else die("false");
+        case 'cpasswd':
+            $password = strip_tags($this->input->get('oldpass'));
+            if($this->check_password($password)) die("true"); else die("false");
+        case 'ccpasswd':
+            $password = strip_tags($this->input->get('oldpass'));
+            if($this->check_child_password($password)) die("true"); else die("false");
         }
     }
 

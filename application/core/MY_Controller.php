@@ -100,7 +100,13 @@ class MY_Controller extends CI_Controller {
 	{
         $this->json->output(array('r' => SERVICE_NUMBER::SUCCESS, 'data' => $data));
 	}
-	
+
+    public function ajaxOutput($msg)
+    {
+        echo $msg;
+        exit;
+    }
+
 	//错误输出
 	public function errorOutput($code = '' , $msg = '' , $req = '')
 	{

@@ -80,7 +80,7 @@ $(function() {
             $("#div_uname_err_info").html("用户名只能包含_,英文字母,数字");
         } else {
             $.ajax({
-                url: 'n_post.php',
+                url: 'http://www.xingqupan.com/auth/check',
                 type: 'post',
                 data: {
                     username: username,
@@ -119,7 +119,7 @@ $(function() {
             $("#div_pname_err_info").html("昵称不能为空");
         } else {
             $.ajax({
-                url: 'n_post.php',
+                url: 'http://www.xingqupan.com/auth/check',
                 type: 'post',
                 data: {
                     petname: petname,
@@ -130,7 +130,7 @@ $(function() {
                     alert('查询用户名出错!');
                 },
                 success: function(result) {
-                    if (result == 'true') {
+                    if (result == '0') {
                         $("#petname").attr("class", "inp ipt-normal");
                         $("#pname_ico_err").hide();
                         $("#pname_ico_ok").show();
@@ -243,7 +243,7 @@ function checkEmail() {
         return false;
     }
     $.ajax({
-        url: 'n_post.php',
+        url: 'http://www.xingqupan.com/auth/check',
         type: 'post',
         data: {
             email: email,
@@ -269,7 +269,7 @@ function checkEmail() {
     });
 }
 function doRegFormSubmit() {
-    if ($("#servItems").attr("checked") != true) {
+    if ($("#servitems").attr("checked") != "checked") {
         alert("您还没有阅读服务条款!");
         return false;
     }
@@ -347,11 +347,10 @@ function doRegFormSubmit() {
         return false;
     } else {
         $.ajax({
-            url: 'n_post.php',
+            url: 'http://www.xingqupan.com/captcha/verify',
             type: 'post',
             data: {
-                code: $.trim($("#authcode").val()),
-                type: 'code'
+                captcha: $.trim($("#authcode").val()),
             },
             dataType: 'text',
             error: function() {

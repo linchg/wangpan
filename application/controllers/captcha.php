@@ -12,10 +12,10 @@ class Captcha extends MY_Controller {
     function verify() {
         $this->load->library('Kcaptcha');
         $p = array();
-        $p['captcha'] = $this->input->get('captcha', true);
+        $p['captcha'] = $this->input->get_post('captcha', true);
         if(!$this->kcaptcha->verify($p['captcha'])) {
-			$this->errorOutput();
+            $this->ajaxOutput(SERVICE_NUMBER::AJAX_ERROR);
         }   
-		$this->successOutput();
+        $this->ajaxOutput(SERVICE_NUMBER::AJAX_SUCCESS);
     }   
 }
