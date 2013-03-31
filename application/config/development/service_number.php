@@ -4,6 +4,9 @@ class SERVICE_NUMBER
 	const SUCCESS = 1;//成功
 	const ERROR = 0;//失败
 
+	const AJAX_SUCCESS = 0;//成功
+	const AJAX_ERROR = 1;//失败
+
 	
 	const FILEHEADER = 1; //文件插在头部
 	const FILEFOOTER = 0; //文件插在尾部
