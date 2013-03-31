@@ -16,6 +16,34 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `blackuser`
+--
+
+DROP TABLE IF EXISTS `blackuser`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `blackuser` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID 自增',
+  `uid` int(11) NOT NULL COMMENT '用户ID',
+  `admin_id` int(11) NOT NULL COMMENT '管理用户ID',
+  `add_time` int(11) NOT NULL COMMENT '创建时间',
+  `add_ip` varchar(20) NOT NULL COMMENT '创建IP',
+  `reason` varchar(180) NOT NULL COMMENT '原因',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='黑名单';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `blackuser`
+--
+
+LOCK TABLES `blackuser` WRITE;
+/*!40000 ALTER TABLE `blackuser` DISABLE KEYS */;
+/*!40000 ALTER TABLE `blackuser` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `commision`
 --
 
@@ -216,7 +244,6 @@ UNLOCK TABLES;
 -- Table structure for table `user`
 --
 
-
 DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -227,8 +254,8 @@ CREATE TABLE `user` (
   `email` varchar(80) DEFAULT '' COMMENT '电子邮件',
   `nickname` varchar(80) DEFAULT '' COMMENT '昵称',
   `petname` varchar(80) DEFAULT '' COMMENT '网盘名称',
-  `down_counts` int(12) DEFAULT 0 COMMENT '下载量',
-  `total_money` float DEFAULT 0.0 COMMENT '获得总拥金',
+  `down_counts` int(12) DEFAULT '0' COMMENT '下载量',
+  `total_money` float DEFAULT '0' COMMENT '获得总拥金',
   `space_name` varchar(80) NOT NULL COMMENT '空间名称',
   `space_desc` text COMMENT '空间描述',
   `login_time` int(11) NOT NULL COMMENT '登录时间',
@@ -265,8 +292,8 @@ CREATE TABLE `user_xia` (
   `uid` int(11) NOT NULL COMMENT '用户ID',
   `xid` int(11) NOT NULL COMMENT '下线用户ID',
   `add_time` int(11) NOT NULL COMMENT '创建时间',
-  KEY `uid` (`uid`,`xid`),
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `uid` (`uid`,`xid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户下线表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -277,6 +304,34 @@ CREATE TABLE `user_xia` (
 LOCK TABLES `user_xia` WRITE;
 /*!40000 ALTER TABLE `user_xia` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user_xia` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `whiteuser`
+--
+
+DROP TABLE IF EXISTS `whiteuser`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `whiteuser` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID 自增',
+  `uid` int(11) NOT NULL COMMENT '用户ID',
+  `admin_id` int(11) NOT NULL COMMENT '管理用户ID',
+  `add_time` int(11) NOT NULL COMMENT '创建时间',
+  `add_ip` varchar(20) NOT NULL COMMENT '创建IP',
+  `reason` varchar(180) NOT NULL COMMENT '原因',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='白名单';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `whiteuser`
+--
+
+LOCK TABLES `whiteuser` WRITE;
+/*!40000 ALTER TABLE `whiteuser` DISABLE KEYS */;
+/*!40000 ALTER TABLE `whiteuser` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -316,4 +371,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-03-24 19:38:50
+-- Dump completed on 2013-03-31 22:00:23
