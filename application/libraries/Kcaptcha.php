@@ -56,7 +56,7 @@ class Kcaptcha {
 		$hAverage = $height - $fontSize;
 		$number = '';
 		//imagettftext($im, $fontSize, rand(-40,40), rand($wRand,$wAverage-5), rand($fontSize , $fontSize+$hAverage-5), $stringColor_1, $font, $char_1);
-		for($i = 1 ; $i < $len ; $i++)
+		for($i = 0 ; $i < $len ; $i++)
 		{
 			$char = $string{rand(0,33)};
 			$color = imagecolorallocate($im, rand(0, 200), rand(0, 200), rand(0, 200));
