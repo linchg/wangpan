@@ -8,7 +8,7 @@ class UserCache
 
     public function __construct() {
         $this->CI =& get_instance();
-        $this->CI->load->dirver('cache');
+        $this->CI->load->driver('cache');
         $this->_time = 30 * 24 * 3600;
     }	
 

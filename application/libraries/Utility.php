@@ -53,6 +53,32 @@ class Utility
 		return true;
 	}
 
+	//用户名是否正常
+	function chk_username($username)
+	{
+		$username = trim($username);
+		if (strlen($username) < 5 || strlen($username) > 15)
+		{
+			$this->CI->error->set_error('20201');
+			return false;
+		}
+		if(!preg_match('/^\w{5,15}$/', $username)) {		
+			$this->CI->error->set_error('20202'); 
+			return false;
+		}
+		return true;
+	}
+	//是否存在用户名
+	function chk_username_exists($username)
+	{
+		$result = $this->chk_username($username);	
+		if (!$result) return true;
+		$this->CI->load->library('cache/UserCache');
+		$row = $this->CI->usercache->get_user($username); 
+		if($row == false) return false;
+		$this->CI->error->set_error('20203');
+		return true;
+	}
 
     // 不可逆混淆加密文字，如日志中的密码信息
     function mosaic($text) {

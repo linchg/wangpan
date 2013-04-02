@@ -17,23 +17,27 @@
                             <td width="243" align="left">
                                 <input name="username" id="username" type="text" value="" size="35" maxlength="20"> 
                                 *</td>
-                            <td width="427" align="left"><div class="info">
-                                    <b id="uname_ico_ok" class="ico-ok" title="正确" style="display:none"></b>
-                                    <b id="uname_ico_err" class="ico-error" title="错误" style="display:none"></b>
+                            <td width="427" align="left">
+							<div class="info" id="username_msg">
+                                    <b  class="ico-ok" title="正确"></b>
+                                    <b  class="ico-error" title="错误"></b>
                                     <div id="div_uname_err" class="info-pop">
                                         <div class="arr"></div>
                                         <div class="info-pop-t"><b class="cr-l"></b><b class="cr-r"></b></div>
                                         <div class="info-pop-c"><div class="cont" id="div_uname_err_info">·5~15个字符，包括字母、数字、下划线<br />·字母和数字开头，字母和数字结尾，不区分大小写<br /></div></div>
                                         <div class="info-pop-b"><b class="cr-l"></b><b class="cr-r"></b></div>
                                     </div>
-                            </div></td>  
+                            </div>
+							</td>  
                         </tr>
 
                         <tr>
                             <td width="302" align="right">帐号昵称：</td>
                             <td width="243" align="left">
                                 <input name="nickname" id="nickname" type="text" value="" size="35" maxlength="20"> </td>
-                            <td width="427" align="left"><div class="info">
+                            <td width="427" align="left">
+							
+							<div class="info">
                                     <b id="uname_ico_ok" class="ico-ok" title="正确" style="display:none"></b>
                                     <b id="uname_ico_err" class="ico-error" title="错误" style="display:none"></b>
                                     <div id="div_uname_err" class="info-pop" style="display:none">
@@ -42,7 +46,9 @@
                                         <div class="info-pop-c"><div class="cont" id="div_uname_err_info"><br /></div></div>
                                         <div class="info-pop-b"><b class="cr-l"></b><b class="cr-r"></b></div>
                                     </div>
-                            </div></td>  
+                            </div>
+							
+							</td>  
                         </tr>
 
 
@@ -50,7 +56,8 @@
                             <td align="right" >网盘名称：</td>
                             <td align="left"><input name="petname" type="text" id="petname" value="" size="35" maxlength="20" />
                                 * </td>
-                            <td align="left"><div class="info">
+                            <td align="left">
+								<div class="info">
                                     <b id="pname_ico_ok" class="ico-ok" title="正确" style="display:none"></b>
                                     <b id="pname_ico_err" class="ico-error" title="错误" style="display:none"></b>
                                     <div id="div_pname_err" class="info-pop"  style="display:none">
@@ -59,13 +66,17 @@
                                         <div class="info-pop-c"><div class="cont" id="div_pname_err_info">·网盘的名称</div></div>
                                         <div class="info-pop-b"><b class="cr-l"></b><b class="cr-r"></b></div>
                                     </div>
-                            </div></td>
+                            	</div>
+							
+							</td>
                         </tr>
                         <tr>
                             <td align="right" >登陆密码：</td>
                             <td align="left"><input name="password" type="password" id="password" value="" size="35" maxlength="20" />
                                 * </td>
-                            <td align="left"><div class="info">
+                            <td align="left">
+							
+								<div class="info">
                                     <b id="password_ico_ok" class="ico-ok" title="正确" style="display:none"></b>
                                     <b id="password_ico_err" class="ico-error" title="错误" style="display:none"></b>
                                     <div id="div_password_rule" class="info-pop" style="display:none">
@@ -87,13 +98,17 @@
                                         <div class="info-pop-c"><div class="cont" id="div_password_err_info"></div></div>
                                         <div class="info-pop-b"><b class="cr-l"></b><b class="cr-r"></b></div>
                                     </div>
-                            </div></td>
+                            	</div>
+							
+							</td>
                         </tr>
                         <tr>
                             <td align="right" >确认密码：</td>
                             <td align="left"><input name="passwordconfirm" type="password" id="passwordconfirm" value="" size="35" maxlength="20" />
                                 *</td>
-                            <td align="left"><div class="info">
+                            <td align="left">
+							
+							<div class="info">
                                     <b id="passwordconfirm_ico_ok" class="ico-ok" title="正确" style="display:none"></b>
                                     <b id="passwordconfirm_ico_err" class="ico-error" title="错误" style="display:none"></b>
                                     <div id="div_passwordconfirm_err" class="info-pop I-error" style="display:none">
@@ -102,7 +117,9 @@
                                         <div class="info-pop-c"><div class="cont" id="div_passwordconfirm_err_info">两次输入密码不一致</div></div>
                                         <div class="info-pop-b"><b class="cr-l"></b><b class="cr-r"></b></div>
                                     </div>
-                            </div></td>
+                            </div>
+							
+							</td>
                         </tr>
                         <tr>
                             <td align="right" >邮箱地址：</td>
@@ -114,7 +131,9 @@
                                     </ul>
                                 </div>
                             </td>
-                            <td align="left"><div class="info">
+                            <td align="left">
+							
+							<div class="info">
                                     <b id="email_ico_ok" class="ico-ok" title="正确" style="display:none"></b>
                                     <b id="email_ico_err" class="ico-error" title="错误" style="display:none"></b>
                                     <div id="div_email_err" class="info-pop I-error">
@@ -123,7 +142,9 @@
                                         <div class="info-pop-c"><div class="cont" id="div_email_err_info">邮箱地址，需邮件认证！请认真填写。</div></div>
                                         <div class="info-pop-b"><b class="cr-l"></b><b class="cr-r"></b></div>
                                     </div>
-                            </div></td>
+                            </div>
+							
+							</td>
                         </tr>
                         <tr>
                             <td align="right" >&nbsp;</td>

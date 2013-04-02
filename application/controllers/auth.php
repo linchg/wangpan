@@ -304,13 +304,18 @@ class Auth extends MY_Controller {
      */
     public function check(){
         $type = $this->input->get_post('type',true);
+		$type = intval($type);
         switch($type){
-        case 'username':
+        case 1:
             $username = $this->input->get_post('username',true);
-            if(!$this->login->check_user_exist($username))
-                $this->ajaxOutput(SERVICE_NUMBER::AJAX_SUCCESS);
+            if(!$this->utility->chk_username_exists($username))
+			{
+                $this->successOutput(array('username' => $username));
+			}
             else
-                $this->ajaxOutput(SERVICE_NUMBER::AJAX_ERROR);
+			{
+                $this->errorOutput();
+			}
             break;
         case 'petname':
             $petname = $this->input->get_post('petname',true);

@@ -8,9 +8,14 @@
 <link href="<?php echo static_url_version('static/css/comm.css');?>" rel="stylesheet" type="text/css" />
 <?php echo isset($css_header) ? $css_header : '';?>
 <script type="text/javascript" src="<?php echo static_url_version('static/js/jquery.min.js');?>"></script>
+<script type="text/javascript" src="<?php echo static_url_version('static/js/global.common.js');?>"></script>
 <?php
 echo isset($js_header) ? $js_header : '';
 ?>
+<script type="text/javascript">
+window.staticUrl = '<?php echo static_url(); ?>';
+window.siteUrl = '<?php echo base_url(); ?>';
+</script>
 </head>
 
 <body>

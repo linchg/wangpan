@@ -12,6 +12,7 @@ $config['js'] = array(
 	'static/js/jquery.blockUI.js' => '201305',
 	'static/js/jquery.cookie.js' => '201305',
 	'static/js/common.js' => '201305',
+	'static/js/global.common.js' => '201305',
 	'static/js/ZeroClipboard.js' => '201305',
 );
 

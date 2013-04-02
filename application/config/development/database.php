@@ -48,11 +48,11 @@
 $active_group = 'wangpan';
 $active_record = TRUE;
 
-$db['wangpan']['hostname'] = 'localhost';
+$db['wangpan']['hostname'] = 'mysql:127.0.0.1';
 $db['wangpan']['username'] = 'root';
 $db['wangpan']['password'] = '';
 $db['wangpan']['database'] = 'wangpan';
-$db['wangpan']['dbdriver'] = 'mysql';
+$db['wangpan']['dbdriver'] = 'pdo';
 $db['wangpan']['dbprefix'] = '';
 $db['wangpan']['pconnect'] = false;
 $db['wangpan']['db_debug'] = TRUE;

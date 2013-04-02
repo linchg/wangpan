@@ -14,8 +14,8 @@ class Captcha extends MY_Controller {
         $p = array();
         $p['captcha'] = $this->input->get_post('captcha', true);
         if(!$this->kcaptcha->verify($p['captcha'])) {
-            $this->ajaxOutput(SERVICE_NUMBER::AJAX_ERROR);
+            $this->errorOutput();
         }   
-        $this->ajaxOutput(SERVICE_NUMBER::AJAX_SUCCESS);
+		$this->successOutput($p);
     }   
 }

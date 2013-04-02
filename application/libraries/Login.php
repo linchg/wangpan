@@ -67,7 +67,7 @@ class Login
        $pwd = $this->CI->utility->get_pwd_md5($pwd);//验证密码
 		if ($pwd == false) return false;
 		$this->CI->load->library('cache/UserCache');
-		$row = $this->CI->userCache->get_user($loginname , 'username'); 
+		$row = $this->CI->userCache->get_user($loginname); 
 		if (empty($row)) {
 			$this->CI->error->set_error(20121);
 			return false;
