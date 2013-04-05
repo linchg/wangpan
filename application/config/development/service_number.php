@@ -19,4 +19,11 @@ class SERVICE_NUMBER
 	const USER_TOP_MENU=3;//用户登录顶部菜单
 	const ADMIN_MENU = 4;//管理后台菜单
 
+	const SECURE_SYSTEM=1;
+	const SECURE_CTR=2;
+	const SECURE_API=3;
+
+	const SECURE_IP = 1; //安全键 ip
+	const SECURE_USER = 2; //安全键 user
+
 }

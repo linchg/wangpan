@@ -117,6 +117,37 @@ class Wangpan{
 		}	
 		return false;
 	}
-	
+
+	//获取安全级别
+	public function get_secure_level($level_key = '')
+	{
+		$level = $this->get('secure_level');
+		if (!empty($level_key) && isset($level[$level_key]))
+		{
+			return $level[$level_key];	
+		}
+		return $level;
+	}
+
+	//获取配置
+	public function get_secure_config($level_key = '')
+	{
+		if(!empty($level_key))
+		{
+			$config = $this->get('secure_'.$level_key);
+			return $config;
+		}
+		$level = $this->get_secure_level();
+		$config = array();
+		foreach($level as $key => $value)
+		{
+			$secure_config = $this->get('secure_'.$key);
+			if (!empty($secure_config))
+			{
+				$config[$key] =  $secure_config;
+			}
+		}
+		return $config;
+	}
 }	
 

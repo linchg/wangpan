@@ -37,7 +37,7 @@ class Error {
 
  	//返回上次错误
     function error() {
-        if(empty($this->_error_code)) {
+        if(!empty($this->_error_code)) {
             return true;
         }
         return false;

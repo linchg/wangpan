@@ -48,7 +48,6 @@ window.siteUrl = '<?php echo base_url(); ?>';
     ?>
 </div>
 
-
 <?php echo $content;?> 
 
 

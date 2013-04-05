@@ -303,6 +303,7 @@ class Auth extends MY_Controller {
      * ajax validate 
      */
     public function check(){
+		$secure = $this->secure->invoke(SERVICE_NUMBER::SECURE_CTR);
         $type = $this->input->get_post('type',true);
 		$type = intval($type);
         switch($type){

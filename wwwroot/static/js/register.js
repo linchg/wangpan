@@ -17,7 +17,7 @@ window.userFeild = {
 			content:'.info-pop .cont', //内容DOM
 			tip:'',//提醒文字
 			tipCall:'',//提醒函数
-			ajaxUrl: '/auth/check',//是否ajax请求
+			ajaxUrl: 'auth/check',//是否ajax请求
 			ajaxParams:{type : 1},
 			checkCall:checkUserName,//
 		    success:successCheckCall,
@@ -45,6 +45,7 @@ function registerCheck()
 		if(typeof vailUserName['checkCall'] == 'function')
 		{
 			var result  =  vailUserName['checkCall'](vailUserName);
+			//console.info(result);
 			if (!$.isArray(result)) return false;
 			if (result[0] === 1)
 			{
@@ -83,6 +84,7 @@ function defaultStatus(vailObj , msg)
 	    $(tmpVailObj['id']).find(tmpVailObj['ok']).hide();
 	    $(tmpVailObj['id']).find(tmpVailObj['error']).hide();
 	    $(tmpVailObj['id']).show();
+		$(tmpVailObj['id']).find(tmpVailObj['contentDom']).show();
 		if (msg)
 		{
 	    	$(tmpVailObj['id']).find(tmpVailObj['content']).html(msg);
@@ -149,6 +151,10 @@ function checkAjax(vailObj , success , error)
 					$("#div_uname_err_info").html("");
 					*/
 				} else {
+					if(parseInt(result.code,10) > 20000)
+					{
+						window.location.href = '/error?code='+result.code;	
+					}
 					if($.isFunction(error))
 					{
 						error(result);

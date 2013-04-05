@@ -18,6 +18,8 @@ $config['user_pwd_prefix'] = 'abc'; //用户密码加密
 $config['md5_key'] = array(
 	'0000' => 'abc', //用户的密码md5前缀
 );
+//服务返回常量
+require_once('service_number.php');
 
 //报错设置
 require('error.php');
@@ -28,8 +30,7 @@ require('static_file_version.php');
 //菜单
 require('menu.php');
 
+//安全
+require('secure.php');
 
-
-//服务返回常量
-require_once('service_number.php');
 
