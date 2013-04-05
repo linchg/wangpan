@@ -13,6 +13,8 @@ $config['encryption_key'] = 'd520a6bd4519f51b09d4c30b0da5f5b0'; //日志加密�
 
 $config['user_pwd_prefix'] = 'abc'; //用户密码加密
 
+$config['directory_depth'] = 3; //用户目录的最大层级
+
 
 //md5
 $config['md5_key'] = array(
