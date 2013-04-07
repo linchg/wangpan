@@ -118,4 +118,12 @@ class MY_Controller extends CI_Controller {
 		$msg = empty($msg) ? $this->error->error_msg($code):$msg;
         $this->json->output(array('code' => $code , 'msg' => $msg , 'req' => $req));
 	}
+
+    public function displayError()
+    {
+        $this->title = '兴趣盘－注册用户';
+        $this->template->set_menu();
+        $this->template->load_view('default' , 'error');
+        exit;
+    }
 }
