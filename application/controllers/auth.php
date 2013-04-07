@@ -17,11 +17,12 @@ class Auth extends MY_Controller {
     {
         if($this->login->is_login()) 
             redirect('user/'); 
-
+        $username = $this->input->get_post('username',true);
+        if($this->login->check_user_black($username))
+            $this->login->before_login();
         $errors = intval($this->session->userdata('login_error_times'));
         if ($errors >= 3){
             if(!$this->login->check_captcha($this->input->get_post('captcha'))){
-                $this->error->set_error('20101');
                 $this->login->before_login();
             }
         }
@@ -30,7 +31,7 @@ class Auth extends MY_Controller {
         $this->form_validation->set_rules('password', '密码', 'trim|required|min_length[6]|max_length[20]');
         if ($this->form_validation->run()){
 
-            if($this->login->validate($this->input->get_post('username',true),$this->input->get_post('password',true)))
+            if($this->login->validate($username,$this->input->get_post('password',true)))
                 $this->login->after_login();
         }
         //登录错误
@@ -39,20 +40,25 @@ class Auth extends MY_Controller {
     }
     
     public function ajax_login() {
+        if(!$this->utility->is_ajax_request()) { 
+            $this->errorOutput(20123);	
+            exit;
+        }
+
+        if($this->login->is_login()) 
+        {
+            $this->errorOutput(20124);	
+            exit;
+        }
 
         $username = trim($this->input->get("username"),true);
         $password = trim($this->input->get('password'),true);
-
-        $user = $this->login->checkLogin($username, $password);
-        if ($user) {
-            $this->login->updateUserLogin($user['id']);
-            $this->login->setUserSession($user);
-            $this->login->setUserCookie($user,$this->input->get('autologin') == 'yes');
-
-            echo $_GET['callback'] . "(" . json_encode(array('status' => 'success')) . ")";
-        } else {
-            echo $_GET['callback'] . "(" . json_encode(array('status' => 'error')) . ")";
+        if($this->login->validate($username,$password))
+        {
+            $this->successOutput();	
+            exit;
         }
+        $this->errorOutput($this->error->get_error());	
     }
     
     public function logout()
@@ -72,13 +78,16 @@ class Auth extends MY_Controller {
     public function do_register()
     {
         if($this->login->is_login()) 
-            redirect('user/'); 
-        $ret = $this->input->get_post('servitems');
-        var_dump($ret);
-        exit;
+            redirect(site_url('user'));
+
+        $username = $this->input->get_post('username',true);
+        if($this->login->check_user_exist($uername))
+        {
+            $this->error->set_error(20203);
+            $this->displayError();
+        }
 
         $this->form_validation->set_rules('username', '帐号', 'trim|required|min_length[5]|max_length[20]|alpha_numeric');
-        $this->form_validation->set_rules('petname', '网盘名称', 'trim|required|min_length[5]|max_length[20]|alpha_numeric');
         $this->form_validation->set_rules('password', '密码', 'trim|required|min_length[5]|max_length[20]');
         $this->form_validation->set_rules('passwordconfirm', '确认密码', 'required|matches[password]');
         $this->form_validation->set_rules('email', '电子邮件', 'trim|required|valid_email');
@@ -86,9 +95,8 @@ class Auth extends MY_Controller {
         if ($this->form_validation->run() === TRUE){
             // for table: user
             $user_array = array(
-                'username' => $this->input->get_post('username',true),
+                'username' => $username,
                 'password' => $this->utility->get_pwd_md5($this->input->get_post('password',true)),
-                'petname' => $this->input->get_post('petname',true),
                 'email' => $this->input->get_post('email',true),
                 'nickname' => $this->input->get_post('nickname',true),
                 'create_time' => time(),
@@ -96,12 +104,14 @@ class Auth extends MY_Controller {
                 'login_time' => time(),
                 'login_ip' => $this->input->ip_address(),
             );
+            $this->load->model('user','',true);
             $userid = $this->user->create($user_array);
-            $user_array['id'] = $userid;
-            $this->login->setUserSession($user_array);
-            $this->login->setUserCookie($user_array,false);
-            redirect($this->login->getLoginBackUrl());
+            $user_array['uid'] = $userid;
+            $this->login->update_last_time($user_array['uid']);
+            $this->login->user_login($user_array);
+            redirect(site_url('user'));
         }
+        $this->displayError();
     }
 
     public function ajax_register() {

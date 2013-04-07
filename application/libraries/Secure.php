@@ -20,7 +20,8 @@ class Secure
 	function init()
 	{
 		$this->ipadress = $this->CI->input->ip_address();
-		$this->username = $this->CI->login->get_login_user();
+        $user_info = $this->CI->login->get_login_user();
+		$this->username = $user_info['username'];
 		if (empty($this->username))
 		{
 			$this->username = '';

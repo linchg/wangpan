@@ -44,6 +44,25 @@ class File extends CI_Model {
         return $query->result_array();
     }
 
+    //获取一个文件的详细信息
+    function get_file($id){
+        $id = intval($id);
+        if($id <= 0)
+            return array(); 
+        $query = $this->db->get_where($this->_table_name, array('id'=>$id));
+        return $query->row_array();
+    }
+
+    //获取一个目录下的所有文件
+    function get_files_by_did($uid,$did){
+        $did = intval($did);
+        if($did < 0)
+            return array(); 
+        $where = array('did'=>$did,'uid'=>$uid);
+        $query = $this->db->get_where($this->_table_name, $where);
+        return $query->result_array();
+    }
+
     function create($values){
 
         if (!isset($values['uid']) || !isset($values['did']) || !isset($values['name']))
@@ -65,22 +84,20 @@ class File extends CI_Model {
 
     function update($value_array, $where){
 
-        if (!isset($where['uid']) && !isset($where['id']))
-            return false;
-        if(isset($where['uid']) && !isset($where['name']))
-            return false;
-
         $this->db->where($where);
         return $this->db->update($this->_table_name, $value_array);
     }
 
     function delete($where){
         
-        if (!isset($where['uid']) && !isset($where['id']))
-            return false;
-        if(isset($where['uid']) && !isset($where['name']))
-            return false;
+        $this->db->where($where);
+        return $this->db->delete($this->_table_name);
+    }
 
+    //删除一个目录下的所有文件
+    function delete_files_by_did($uid,$did){
+
+        $where = array('uid'=>$uid,'did'=>$did);
         $this->db->where($where);
         return $this->db->delete($this->_table_name);
     }

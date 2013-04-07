@@ -16,6 +16,38 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `adminuser`
+--
+
+DROP TABLE IF EXISTS `adminuser`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `adminuser` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID 自增',
+  `username` varchar(80) NOT NULL COMMENT '用户名',
+  `password` varchar(32) NOT NULL COMMENT '密码',
+  `admin_id` int(11) NOT NULL COMMENT '管理用户ID',
+  `add_time` int(11) NOT NULL COMMENT '创建时间',
+  `add_ip` varchar(20) NOT NULL COMMENT '创建IP',
+  `login_time` int(11) NOT NULL COMMENT '登录时间',
+  `login_num` int(11) DEFAULT '0' COMMENT '登录次数',
+  `login_ip` varchar(20) NOT NULL COMMENT '登录IP',
+  `groups` varchar(20) NOT NULL COMMENT '用户所在的组ID,|分割',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='管理员名单';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `adminuser`
+--
+
+LOCK TABLES `adminuser` WRITE;
+/*!40000 ALTER TABLE `adminuser` DISABLE KEYS */;
+/*!40000 ALTER TABLE `adminuser` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `blackuser`
 --
 
@@ -43,6 +75,32 @@ CREATE TABLE `blackuser` (
 LOCK TABLES `blackuser` WRITE;
 /*!40000 ALTER TABLE `blackuser` DISABLE KEYS */;
 /*!40000 ALTER TABLE `blackuser` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `checkin`
+--
+
+DROP TABLE IF EXISTS `checkin`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `checkin` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID 自增',
+  `uid` varchar(80) NOT NULL COMMENT '用户id',
+  `add_time` int(11) NOT NULL COMMENT '签到时间',
+  `add_ip` varchar(20) NOT NULL COMMENT '创建IP',
+  PRIMARY KEY (`id`),
+  KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='签到表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `checkin`
+--
+
+LOCK TABLES `checkin` WRITE;
+/*!40000 ALTER TABLE `checkin` DISABLE KEYS */;
+/*!40000 ALTER TABLE `checkin` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -84,11 +142,13 @@ DROP TABLE IF EXISTS `directory`;
 CREATE TABLE `directory` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID 自增',
   `uid` int(11) NOT NULL COMMENT '用户ID',
-  `did` int(11) NOT NULL DEFAULT '0' COMMENT '目录序列号',
+  `fid` int(11) NOT NULL DEFAULT '0' COMMENT '父级目录ID',
+  `file_num` int(11) NOT NULL DEFAULT '0' COMMENT '文件数量',
   `name` varchar(200) NOT NULL COMMENT '目录名称',
   `add_time` int(11) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`),
-  KEY `uid` (`uid`,`did`)
+  KEY `uid` (`uid`),
+  KEY `fid` (`fid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户目录表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -168,11 +228,12 @@ DROP TABLE IF EXISTS `file`;
 CREATE TABLE `file` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID 自增',
   `uid` int(11) NOT NULL COMMENT '用户ID',
-  `did` int(11) NOT NULL COMMENT '目录序列号',
+  `did` int(11) NOT NULL COMMENT '目录ID',
   `name` varchar(200) NOT NULL COMMENT '文件名称',
   `size` int(11) NOT NULL DEFAULT '0' COMMENT '文件大小',
   `down_times` int(11) NOT NULL DEFAULT '0' COMMENT '下载次数',
   `add_time` int(11) NOT NULL COMMENT '上传时间',
+  `add_ip` varchar(20) NOT NULL COMMENT '创建IP',
   PRIMARY KEY (`id`),
   KEY `uid` (`uid`,`did`),
   KEY `name` (`uid`,`name`)
@@ -186,6 +247,33 @@ CREATE TABLE `file` (
 LOCK TABLES `file` WRITE;
 /*!40000 ALTER TABLE `file` DISABLE KEYS */;
 /*!40000 ALTER TABLE `file` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `groups`
+--
+
+DROP TABLE IF EXISTS `groups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `groups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID 自增',
+  `name` varchar(80) NOT NULL COMMENT '组名',
+  `add_time` int(11) NOT NULL COMMENT '创建时间',
+  `admin_id` int(11) NOT NULL COMMENT '管理用户ID',
+  `privileges` varchar(30) NOT NULL COMMENT '权限ID,|分割',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户组';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `groups`
+--
+
+LOCK TABLES `groups` WRITE;
+/*!40000 ALTER TABLE `groups` DISABLE KEYS */;
+/*!40000 ALTER TABLE `groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -243,6 +331,33 @@ LOCK TABLES `points` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `privileges`
+--
+
+DROP TABLE IF EXISTS `privileges`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `privileges` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID 自增',
+  `name` varchar(80) NOT NULL COMMENT '权限名称',
+  `C` varchar(20) NOT NULL COMMENT '权限类',
+  `M` varchar(20) NOT NULL COMMENT '权限方法',
+  `admin_id` int(11) NOT NULL COMMENT '管理用户ID',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='权限';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `privileges`
+--
+
+LOCK TABLES `privileges` WRITE;
+/*!40000 ALTER TABLE `privileges` DISABLE KEYS */;
+/*!40000 ALTER TABLE `privileges` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `user`
 --
 
@@ -255,7 +370,6 @@ CREATE TABLE `user` (
   `password` varchar(32) NOT NULL COMMENT '密码',
   `email` varchar(80) DEFAULT '' COMMENT '电子邮件',
   `nickname` varchar(80) DEFAULT '' COMMENT '昵称',
-  `petname` varchar(80) DEFAULT '' COMMENT '网盘名称',
   `down_counts` int(12) DEFAULT '0' COMMENT '下载量',
   `total_money` float DEFAULT '0' COMMENT '获得总拥金',
   `space_name` varchar(80) NOT NULL COMMENT '空间名称',
@@ -268,7 +382,6 @@ CREATE TABLE `user` (
   `add_ip` varchar(20) NOT NULL COMMENT '创建IP',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
-  UNIQUE KEY `petname` (`petname`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -375,4 +488,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-03-31 22:00:23
+-- Dump completed on 2013-04-05 16:31:19
