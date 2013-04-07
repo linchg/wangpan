@@ -30,6 +30,31 @@ window.userFeild = {
 				'用户名只能包含_,英文字母,数字'
 			]
 		}, 	
+	'nickname' : {
+			id : '#nickname_msg',
+			input : '#nickname',
+			rule : 1, 
+			msg: '2－20个字符，支持中文、英文、数字、下划线',
+			ok:'.ico-ok',
+			error:'.ico-error',
+			contentDom:'.info-pop', // 内容的父dom
+			content:'.info-pop .cont', //内容DOM
+			tip:'',//提醒文字
+			tipCall:'',//提醒函数
+			ajaxUrl: '',//是否ajax请求
+			ajaxParams:{type : 1},
+			checkCall:checkNickname,//
+		    success:successCheckCall,
+		    errorCall:errorCheckCall,
+			blurClass:'inp ipt-focus',
+			successClass:'inp ipt-normal',
+			tips:[
+				'2－20个字符，支持中文、英文、数字、下划线',
+				'合法长度为2-20个字符',
+				'2－20个字符，支持中文、英文、数字、下划线'
+			]
+		}, 	
+
 }
 
 //用户注册验证
@@ -40,31 +65,65 @@ function registerCheck()
 	defaultStatus();
 
 	//用户名
-	var vailUserName = window.userFeild['username'];	
-	$(vailUserName['input']).blur(function(){
-		if(typeof vailUserName['checkCall'] == 'function')
+	$('#username').blur(function(){
+		var vailInput = window.userFeild['username'];	
+		if(typeof vailInput['checkCall'] == 'function')
 		{
-			var result  =  vailUserName['checkCall'](vailUserName);
-			//console.info(result);
+			var result  =  vailInput['checkCall'](vailInput);
 			if (!$.isArray(result)) return false;
 			if (result[0] === 1)
 			{
-				if (vailUserName['ajaxUrl'])
+				if (vailInput['ajaxUrl'])
 				{
-					checkAjax(vailUserName);				
+					checkAjax(vailInput);				
 				} 
 				else
 				{
-					vailUserName['success'] && vailUserName['success'].apply(this,result.slice(1));
+					vailInput['success'] && vailInput['success'].apply(this,result.slice(1));
 				}
 			}
 			else if (result[0] === 0)
 			{
-				defaultStatus.apply(this , result.slice(1));
+				setStatus.apply(this , result.slice(1) , 2);
 			}
 			else
 			{
-				vailUserName['errorCall'] && vailUserName['errorCall'].apply(this,result.slice(1));
+				vailInput['errorCall'] && vailInput['errorCall'].apply(this,result.slice(1));
+			}
+			
+		}
+	});
+
+	//昵称
+	$('#nickname').focus(function(){
+		var vailInput = window.userFeild['nickname'];	
+		setStatus(vailInput , vailInput['msg'] , 2);	
+	}).blur(function(){
+		var vailInput = window.userFeild['nickname'];	
+		if(typeof vailInput['checkCall'] == 'function')
+		{
+			var result  =  vailInput['checkCall'](vailInput);
+			console.info(result);
+			if (!$.isArray(result)) return false;
+			if (result[0] === 1)
+			{
+				if (vailInput['ajaxUrl'])
+				{
+					checkAjax(vailInput);				
+				} 
+				else
+				{
+					vailInput['success'] && vailInput['success'].apply(this,result.slice(1));
+				}
+			}
+			else if (result[0] === 0)
+			{
+				console.info('w');
+				setStatus.apply(this , result.slice(1),1);
+			}
+			else
+			{
+				vailInput['errorCall'] && vailInput['errorCall'].apply(this,result.slice(1));
 			}
 			
 		}
@@ -72,7 +131,6 @@ function registerCheck()
 }
 
 
-//默认装态
 function defaultStatus(vailObj , msg)
 {
 	var vailObj = vailObj || null;
@@ -84,12 +142,41 @@ function defaultStatus(vailObj , msg)
 	    $(tmpVailObj['id']).find(tmpVailObj['ok']).hide();
 	    $(tmpVailObj['id']).find(tmpVailObj['error']).hide();
 	    $(tmpVailObj['id']).show();
-		$(tmpVailObj['id']).find(tmpVailObj['contentDom']).show();
+		//$(tmpVailObj['id']).find(tmpVailObj['contentDom']).show();
+		/*if (msg)
+		{
+	    	$(tmpVailObj['id']).find(tmpVailObj['content']).html(msg);
+		}
+		*/
+	}
+}
+//默认装态
+function setStatus(vailObj , msg , hide)
+{
+			console.info(hide);
+	var vailObj = vailObj || null;
+	var feild = $.isEmptyObject(vailObj) ? window.userFeild:[vailObj];
+	for(var i in feild)
+	{
+		if (!feild[i]['rule']) continue;
+		var tmpVailObj = feild[i];	
+	    $(tmpVailObj['id']).find(tmpVailObj['ok']).hide();
+	    $(tmpVailObj['id']).find(tmpVailObj['error']).hide();
+	    $(tmpVailObj['id']).show();
+		if (hide == 1)
+		{
+			$(tmpVailObj['id']).find(tmpVailObj['contentDom']).hide();
+		}	
+		else
+		{
+			$(tmpVailObj['id']).find(tmpVailObj['contentDom']).show();
+		}
 		if (msg)
 		{
 	    	$(tmpVailObj['id']).find(tmpVailObj['content']).html(msg);
 		}
 	}
+
 }
 
 //公共错误处理函数
@@ -125,6 +212,7 @@ function checkAjax(vailObj , success , error)
 	var inputVal = $.trim($(vailObj['input']).val());
 	var key = vailObj['input'].replace('#' , '');
 	params[key] = inputVal;
+	console.info(vailObj);
 	$.ajax({
 			url: window.siteUrl+vailObj['ajaxUrl'],
 			type: 'post',
@@ -153,7 +241,7 @@ function checkAjax(vailObj , success , error)
 				} else {
 					if(parseInt(result.code,10) > 20000)
 					{
-						window.location.href = '/error?code='+result.code;	
+						window.location.href = '/msg?code='+result.code;	
 					}
 					if($.isFunction(error))
 					{
@@ -178,10 +266,10 @@ function checkAjax(vailObj , success , error)
 
 //验证用户名
 function checkUserName(vailObj)
-{
+{	
 	if ($.isEmptyObject(vailObj)) return false;
 	var username = $.trim($(vailObj['input']).val());
-	var result = checkLoginName(username);
+	var result = chkUserName(username);
 	var msg = '';
 	var tipCode = Math.abs(result);
 	if (result === 0)
@@ -198,3 +286,26 @@ function checkUserName(vailObj)
 	}
 	return [result , vailObj , msg];
 } 
+
+//昵称
+function checkNickname(vailObj)
+{
+	if ($.isEmptyObject(vailObj)) return false;
+	var nickname = $.trim($(vailObj['input']).val());
+	var result = chkNickname(nickname);
+	var msg = '';
+	var tipCode = Math.abs(result);
+	if (result === 0)
+	{
+		msg = '';	
+	} 
+	else if(result === -1)
+	{
+		msg = vailObj['tips'][tipCode];
+	}
+	else if(result === -2)
+	{
+		msg = vailObj['tips'][tipCode];
+	}
+	return [result , vailObj , msg];
+}

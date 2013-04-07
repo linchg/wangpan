@@ -10,12 +10,12 @@ $config['secure_level'] = array(
 $config['secure_controller'] = array(
 	'auth/save' => array(
 		'secure_call' => 'secure_controller_register',	
-		'secure_params' => array(SERVICE_NUMBER::SECURE_IP , 3 ,  1), //调用函数参数
+		'secure_params' => array(SERVICE_NUMBER::SECURE_IP , 1000 ,  3000), //调用函数参数
 	),
 	'auth/check' =>	array(
 		//'before_associate' => array('auth/save'),
 		'secure_call' => 'secure_controller_register', //调用安全级别函数
-		'secure_params' => array(SERVICE_NUMBER::SECURE_IP , 3 , 1), //调用函数参数
+		'secure_params' => array(SERVICE_NUMBER::SECURE_IP , 1000 , 3000), //调用函数参数
 		//'after_associate' => array('auth/save'),
 	),
 );

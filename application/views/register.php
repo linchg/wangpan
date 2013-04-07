@@ -21,10 +21,10 @@
 							<div class="info" id="username_msg">
                                     <b  class="ico-ok" title="正确"></b>
                                     <b  class="ico-error" title="错误"></b>
-                                    <div id="div_uname_err" class="info-pop">
+                                    <div class="info-pop">
                                         <div class="arr"></div>
                                         <div class="info-pop-t"><b class="cr-l"></b><b class="cr-r"></b></div>
-                                        <div class="info-pop-c"><div class="cont" id="div_uname_err_info">·5~15个字符，包括字母、数字、下划线<br />·字母和数字开头，字母和数字结尾，不区分大小写<br /></div></div>
+                                        <div class="info-pop-c"><div class="cont">·5~15个字符，包括字母、数字、下划线<br />·字母和数字开头，字母和数字结尾，不区分大小写<br /></div></div>
                                         <div class="info-pop-b"><b class="cr-l"></b><b class="cr-r"></b></div>
                                     </div>
                             </div>
@@ -37,13 +37,13 @@
                                 <input name="nickname" id="nickname" type="text" value="" size="35" maxlength="20"> </td>
                             <td width="427" align="left">
 							
-							<div class="info">
-                                    <b id="uname_ico_ok" class="ico-ok" title="正确" style="display:none"></b>
-                                    <b id="uname_ico_err" class="ico-error" title="错误" style="display:none"></b>
-                                    <div id="div_uname_err" class="info-pop" style="display:none">
+							<div class="info" id="nickname_msg">
+                                    <b class="ico-ok" title="正确" style="display:none"></b>
+                                    <b  class="ico-error" title="错误" style="display:none"></b>
+                                    <div class="info-pop" style="display:none">
                                         <div class="arr"></div>
                                         <div class="info-pop-t"><b class="cr-l"></b><b class="cr-r"></b></div>
-                                        <div class="info-pop-c"><div class="cont" id="div_uname_err_info"><br /></div></div>
+                                        <div class="info-pop-c"><div class="cont"></div></div>
                                         <div class="info-pop-b"><b class="cr-l"></b><b class="cr-r"></b></div>
                                     </div>
                             </div>

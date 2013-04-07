@@ -62,9 +62,9 @@ class Secure
         $this->CI->load->driver('cache');
 		$key = $this->_key.'_'.$this->controller.'_'.$key;
         $value = $this->CI->cache->memcached->get($key);
+		$time = strtotime(date('Ymd235959',time()));
 		if(empty($value))
 		{
-			$time = strtotime(date('Ymd235959',time()));
 			$v_time = strtotime(date('YmdH5959',time()));
 			$v = array('c' => 1 , 't' =>1 , 'e'=>$v_time);
 			$this->CI->cache->memcached->save($key , $v , $time); 
@@ -85,15 +85,15 @@ class Secure
 		}
 		if(time() > $expire)
 		{
-			$value['v'] = 0;	
+			$value['c'] = 0;	
 			$value['e']  = strtotime(date('YmdH5959',time()));
 		}
 		else
 		{
-			$value['v'] = $value['v'] + 1;
+			$value['c'] = $count + 1;
 		}
-		$value['t'] =  $value['t'] + 1;
-		$this->CI->cache->memcached->save($key , $vaule , $time); 
+		$value['t'] =  $total + 1;
+		$this->CI->cache->memcached->save($key , $value, $time); 
 		return true;
 	}
    
