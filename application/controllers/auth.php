@@ -17,11 +17,12 @@ class Auth extends MY_Controller {
     {
         if($this->login->is_login()) 
             redirect('user/'); 
-
+        $username = $this->input->get_post('username',true);
+        if($this->login->check_user_black($username))
+            $this->login->before_login();
         $errors = intval($this->session->userdata('login_error_times'));
         if ($errors >= 3){
             if(!$this->login->check_captcha($this->input->get_post('captcha'))){
-                $this->error->set_error('20101');
                 $this->login->before_login();
             }
         }
@@ -30,7 +31,7 @@ class Auth extends MY_Controller {
         $this->form_validation->set_rules('password', '密码', 'trim|required|min_length[6]|max_length[20]');
         if ($this->form_validation->run()){
 
-            if($this->login->validate($this->input->get_post('username',true),$this->input->get_post('password',true)))
+            if($this->login->validate($username,$this->input->get_post('password',true)))
                 $this->login->after_login();
         }
         //登录错误

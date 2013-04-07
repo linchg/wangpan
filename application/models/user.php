@@ -58,7 +58,7 @@ class User extends CI_Model {
 
 
     function get($value, $field = 'id'){
-        if(!in_array($field,array('id','username')))
+        if(!in_array($field,array('id','username','email')))
             return array(); 
 
         $where = array($field => $value);

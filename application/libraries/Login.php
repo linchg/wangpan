@@ -77,7 +77,7 @@ class Login
 			$this->CI->error->set_error(20122);
 			return false;
 		}
-		$this->update_last_time($row['id']);
+		$this->update_last_time($row['uid']);
 		$this->user_login($row);
 		return $row;
 	}
@@ -93,7 +93,7 @@ class Login
 		$token = $this->get_sig($user['username'] , $user['password']);
 		$session_data = array(
 			'username' => $user['username'],
-			'uid' => $user['id'],
+			'uid' => $user['uid'],
 			'token' => $token,
 			'nickname' => $user['nickname'],
 			'login_ts' => time(),
@@ -125,39 +125,50 @@ class Login
 	//用户退出
 	public function user_exit()
 	{
-		clear_user_login(true);	
+        $this->clear_user_login(true);	
 	}
 	
 	//验证用户是否在黑名单里面
-	public function check_user()
+	public function check_user_black($username)
 	{
-		
+        $this->CI->load->model('blackuser','',true);
+        $user = $this->CI->blackuser->get($username,'username');
+        if($user)
+        {
+            $this->CI->error->set_error('20103');
+            return true;
+        }
+        return false;
 	}
 
     public function check_captcha($captcha){
         if(empty($captcha))
             return false;
         $this->CI->load->library('Kcaptcha');
-        return $this->CI->kcaptcha->verify(array('captcha'=>$captcha)); 
+        if(!$this->CI->kcaptcha->verify(array('captcha'=>$captcha))) 
+        {
+            $this->CI->error->set_error('20101');
+            return false;
+        }
+        return true;
     }
 
     public function check_user_exist($userename){
-        return false;
+		$this->CI->load->model('user','',true);
+        $user = $this->CI->user->get($username,'username');
+        return empty($user) ? false : true;
     }
 
     public function check_email_exist($email){
-        return false;
-    }
-
-    //网盘名称
-    public function check_petname_exist($email){
-        return false;
+		$this->CI->load->model('user','',true);
+        $user = $this->CI->user->get($email,'email');
+        return empty($user) ? false : true;
     }
 
     //登录出现错误后，退回url
     public function before_login(){
-        if (isset($_SERVER['HTTP_REFERER'])){
-            redirect($_SERVER['HTTP_REFERER']);
+        if (isset($this->CI->input->server('HTTP_REFERER',true))){
+            redirect($this->CI->input->server('HTTP_REFERER',true));
         }
         redirect(site_url('/'));
     }

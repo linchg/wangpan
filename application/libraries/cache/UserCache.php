@@ -17,6 +17,7 @@ class UserCache
         if(empty($username))
             return false;
         $user = $this->CI->cache->memcached->get($this->_key.$username);
+        $user['uid'] = $user['id'];
         if(!$user)
         {
             $this->CI->load->model('user','',true);
